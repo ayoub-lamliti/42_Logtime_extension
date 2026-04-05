@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "name": "Logtime Companion",
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA",
+    "short_name": "Logtime",
+    "version": "1.0.0",
+    "description": "Track your 42 Network weekly logtime. Get notified at 20h, 25h and 30h milestones.",
+    "permissions": [
+        "identity",
+        "storage",
+        "alarms",
+        "notifications"
+    ],
+    "host_permissions": [
+        "https://api.intra.42.fr/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Logtime Companion"
+    },
+    "icons": {
+        "16": "icons/icon16.png",
+        "32": "icons/icon32.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "minimum_chrome_version": "112"
+}
