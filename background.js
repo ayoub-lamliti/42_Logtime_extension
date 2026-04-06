@@ -277,11 +277,14 @@
   async function checkMilestones(hours, targetDay) {
     await resetNotificationsIfNewWeek(targetDay);
     const notified = await getNotifiedMilestones();
-    for (const milestone of MILESTONES) {
-      if (hours >= milestone && !notified.has(milestone)) {
-        fireNotification(milestone, hours);
+    const crossedUnnotified = MILESTONES.filter(m => hours >= m && !notified.has(m));
+
+    if (crossedUnnotified.length > 0) {
+      const highestMilestone = Math.max(...crossedUnnotified);
+      fireNotification(highestMilestone, hours);
+      for (const milestone of crossedUnnotified) {
         await addNotifiedMilestone(milestone);
-        console.log(`[bg] Notified for ${milestone}h milestone.`);
+        console.log(`[bg] Marked ${milestone}h as notified silently.`);
       }
     }
   }
