@@ -261,11 +261,11 @@
   }
   function fireNotification(milestone, actualHours) {
     const remaining = Math.max(0, WEEKLY_QUOTA_HOURS - actualHours).toFixed(1);
-    
-    const message = milestone >= WEEKLY_QUOTA_HOURS 
-      ? "🏆 Weekly quota complete! Great work this week." 
+
+    const message = milestone >= WEEKLY_QUOTA_HOURS
+      ? "🏆 Weekly quota complete! Great work this week."
       : `${remaining}h remaining to hit the ${WEEKLY_QUOTA_HOURS}h weekly quota.`;
-      
+
     chrome.notifications.create(`logtime-milestone-${milestone}h`, {
       type: "basic",
       iconUrl: "icons/icon128.png",
@@ -279,7 +279,7 @@
     const notified = await getNotifiedMilestones();
     for (const milestone of MILESTONES) {
       if (hours >= milestone && !notified.has(milestone)) {
-        fireNotification(milestone);
+        fireNotification(milestone, hours);
         await addNotifiedMilestone(milestone);
         console.log(`[bg] Notified for ${milestone}h milestone.`);
       }
