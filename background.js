@@ -259,13 +259,17 @@
       console.log("[bg] New week detected \u2013 notification flags reset.");
     }
   }
-  function fireNotification(milestone) {
-    const remaining = WEEKLY_QUOTA_HOURS - milestone;
-    const message = milestone >= WEEKLY_QUOTA_HOURS ? "\u{1F3C6} Weekly quota complete! Great work this week." : `${remaining}h remaining to hit the ${WEEKLY_QUOTA_HOURS}h weekly quota.`;
+  function fireNotification(milestone, actualHours) {
+    const remaining = Math.max(0, WEEKLY_QUOTA_HOURS - actualHours).toFixed(1);
+    
+    const message = milestone >= WEEKLY_QUOTA_HOURS 
+      ? "🏆 Weekly quota complete! Great work this week." 
+      : `${remaining}h remaining to hit the ${WEEKLY_QUOTA_HOURS}h weekly quota.`;
+      
     chrome.notifications.create(`logtime-milestone-${milestone}h`, {
       type: "basic",
       iconUrl: "icons/icon128.png",
-      title: `\u{1F3AF} ${milestone}h logged this week!`,
+      title: `🎯 ${milestone}h logged this week!`,
       message,
       priority: 2
     });
