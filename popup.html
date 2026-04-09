@@ -6,24 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Logtime Companion</title>
     <style>
-        /* ── Variables ─────────────────────────────────────────────────────── */
-        :root {
-            --color-bg: #0d0d0f;
-            --color-surface: #18181c;
-            --color-surface-2: #23232a;
-            --color-border: #2e2e38;
-            --color-text: #e8e8f0;
-            --color-text-muted: #6e6e82;
-            --color-accent: #7b61ff;
-            --color-accent-dim: rgba(123, 97, 255, 0.15);
-            --color-success: #3ecf8e;
-            --color-warning: #f7b731;
-            --color-danger: #f06464;
-            --radius: 10px;
-            --transition: 0.2s ease;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap');
 
-        /* ── Reset ─────────────────────────────────────────────────────────── */
         *,
         *::before,
         *::after {
@@ -32,83 +16,107 @@
             padding: 0;
         }
 
-        /* ── Base ──────────────────────────────────────────────────────────── */
         body {
             width: 300px;
-            background: var(--color-bg);
-            color: var(--color-text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
-                sans-serif;
-            font-size: 14px;
+            background: #111114;
+            color: #d4d4e0;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
             line-height: 1.5;
             user-select: none;
             overflow: hidden;
         }
 
-        /* ── Shell ─────────────────────────────────────────────────────────── */
-        .shell {
-            display: flex;
-            flex-direction: column;
-            min-height: 200px;
-        }
-
-        /* ── Header ────────────────────────────────────────────────────────── */
-        .header {
+        /* ── HEADER ── */
+        .p-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 16px 18px 14px;
-            border-bottom: 1px solid var(--color-border);
+            padding: 14px 16px 12px;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+            background: #0e0e11;
         }
 
-        .header__logo {
-            width: 28px;
-            height: 28px;
-            background: var(--color-accent);
+        .p-logo {
+            width: 26px;
+            height: 26px;
             border-radius: 6px;
+            background: #00d97e18;
+            border: 0.5px solid #00d97e40;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
             flex-shrink: 0;
         }
 
-        .header__title {
-            font-size: 13px;
+        .p-logo svg {
+            display: block;
+        }
+
+        .p-title {
+            font-size: 12.5px;
             font-weight: 600;
-            letter-spacing: 0.02em;
-            color: var(--color-text);
+            color: #e8e8f2;
+            letter-spacing: 0.01em;
         }
 
-        .header__subtitle {
-            font-size: 11px;
-            color: var(--color-text-muted);
+        .p-subtitle {
+            font-size: 10.5px;
+            color: #8e8e9f;
             margin-top: 1px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.03em;
         }
 
-        /* ── Views ─────────────────────────────────────────────────────────── */
-        [hidden] {
-            display: none !important;
+        .p-status-dot {
+            margin-left: auto;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00d97e;
+            box-shadow: 0 0 6px #00d97e80;
+            flex-shrink: 0;
         }
 
-        /* ── Loading view ──────────────────────────────────────────────────── */
-        #view-loading {
+        .p-status-dot.offline {
+            background: #555566;
+            box-shadow: none;
+        }
+
+        .p-status-dot.error {
+            background: #f06464;
+            box-shadow: 0 0 6px #f0646460;
+        }
+
+        /* ── VIEWS ── */
+        .p-view {
+            display: none;
+        }
+
+        .p-view.active {
             display: flex;
+            flex-direction: column;
+        }
+
+        /* ── LOADING VIEW ── */
+        .p-loading {
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 48px 0;
-            color: var(--color-text-muted);
-            font-size: 13px;
+            padding: 42px 0;
+            color: #8e8e9f;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--color-border);
-            border-top-color: var(--color-accent);
+        .p-spinner {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #22222e;
+            border-top-color: #00d97e;
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+            animation: spin 0.6s linear infinite;
+            flex-shrink: 0;
         }
 
         @keyframes spin {
@@ -117,264 +125,421 @@
             }
         }
 
-        /* ── Unauthenticated view ──────────────────────────────────────────── */
-        #view-unauthenticated {
-            padding: 28px 18px;
-            display: flex;
-            flex-direction: column;
+        /* ── AUTH VIEW ── */
+        .p-auth {
+            padding: 28px 20px;
             align-items: center;
             gap: 14px;
             text-align: center;
         }
 
-        .connect-desc {
-            font-size: 12px;
-            color: var(--color-text-muted);
-            line-height: 1.6;
+        .p-auth-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #1a1a22;
+            border: 0.5px solid rgba(255, 255, 255, 0.07);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* ── Authenticated view ────────────────────────────────────────────── */
-        #view-authenticated {
-            padding: 18px;
-            padding-top: 2px;
+        .p-auth-desc {
+            font-size: 12px;
+            color: #8e8e9f;
+            line-height: 1.7;
+            max-width: 220px;
+        }
+
+        /* ── MAIN VIEW ── */
+        .p-main {
+            padding: 0;
+        }
+
+        .p-section {
+            padding: 14px 16px;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .p-section:last-child {
+            border-bottom: none;
+        }
+
+        /* Timer row */
+        .timer-row {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .timer-cell {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 0;
         }
 
-        /* Hours display */
-        .hours-display {
+        .timer-cell+.timer-cell {
+            border-left: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .timer-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 26px;
+            font-weight: 700;
+            color: #e8e8f2;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-val.accent {
+            color: #00d97e;
+        }
+
+        .timer-val.warn {
+            color: #f7b731;
+        }
+
+        .timer-lbl {
+            font-size: 9.5px;
+            color: #8e8e9f;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Hours section */
+        .hours-row {
             display: flex;
             align-items: baseline;
-            gap: 4px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
-        .hours-value {
-            font-size: 42px;
+        .hours-big {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 38px;
             font-weight: 700;
-            letter-spacing: -0.03em;
+            color: #e8e8f2;
             line-height: 1;
-            color: var(--color-text);
+            letter-spacing: -0.03em;
             font-variant-numeric: tabular-nums;
         }
 
         .hours-unit {
-            font-size: 16px;
-            color: var(--color-text-muted);
-            font-weight: 500;
-        }
-
-        .hours-quota {
-            font-size: 13px;
-            color: var(--color-text-muted);
-            margin-left: auto;
-            align-self: center;
-        }
-
-        /* Progress bar */
-        .progress-wrap {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: var(--color-surface-2);
-            border-radius: 999px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 999px;
-            background: var(--color-accent);
-            transition: width 0.4s ease, background-color 0.4s ease;
-            width: 0%;
-        }
-
-        /* Milestone tick marks */
-        .progress-ticks {
-            position: relative;
-            height: 0;
-        }
-
-        .progress-tick {
-            position: absolute;
-            top: -14px;
-            transform: translateX(-50%);
-            width: 1px;
-            height: 10px;
-            background: var(--color-border);
-        }
-
-        .progress-tick-label {
-            position: absolute;
-            top: -28px;
-            transform: translateX(-50%);
-            font-size: 9px;
-            color: var(--color-text-muted);
-            white-space: nowrap;
-        }
-
-        .status-text {
-            font-size: 11px;
-            color: var(--color-text-muted);
-            text-align: center;
-        }
-
-        /* Action row */
-        .action-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* ── Error view ────────────────────────────────────────────────────── */
-        #view-error {
-            padding: 24px 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            text-align: center;
-        }
-
-        .error-icon {
-            font-size: 28px;
-        }
-
-        .error-title {
-            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            color: #8e8e9f;
             font-weight: 600;
         }
 
-        .error-msg {
+        .hours-quota {
+            margin-left: auto;
             font-size: 11px;
-            color: var(--color-text-muted);
-            line-height: 1.6;
-            word-break: break-word;
+            color: #8e8e9f;
+            font-family: 'JetBrains Mono', monospace;
+            align-self: center;
         }
 
-        /* ── Buttons ───────────────────────────────────────────────────────── */
-        .btn {
+        /* Progress */
+        .prog-track {
+            height: 4px;
+            background: #1c1c26;
+            border-radius: 99px;
+            overflow: visible;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .prog-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            border-radius: 99px;
+            background: #00d97e;
+            transition: width 0.5s cubic-bezier(.4, 0, .2, 1), background 0.4s;
+            box-shadow: 0 0 8px #00d97e60;
+            width: 0%;
+        }
+
+        .prog-fill.warn {
+            background: #f7b731;
+            box-shadow: 0 0 8px #f7b73160;
+        }
+
+        .prog-fill.danger {
+            background: #f06464;
+            box-shadow: 0 0 8px #f0646460;
+        }
+
+        .prog-tick {
+            position: absolute;
+            top: -4px;
+            bottom: -4px;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .prog-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9.5px;
+            color: #8e8e9f;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.04em;
+            padding: 0 1px;
+            margin-bottom: 8px;
+        }
+
+        .prog-status {
+            font-size: 11px;
+            color: #8e8e9f;
+            text-align: center;
+            line-height: 1.5;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prog-status .highlight {
+            color: #00d97e;
+        }
+
+        .prog-status .highlight.warn {
+            color: #f7b731;
+        }
+
+        /* Select */
+        .p-select-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .p-select-lbl {
+            font-size: 11px;
+            color: #8e8e9f;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .p-select {
+            flex: 1;
+            background: #18181e;
+            color: #e8e8f2;
+            border: 0.5px solid rgba(255, 255, 255, 0.07);
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 11.5px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .p-select:focus {
+            border-color: rgba(0, 217, 126, 0.3);
+        }
+
+        /* Action row */
+        .p-actions {
+            display: flex;
+            gap: 6px;
+            padding: 12px 16px 14px;
+        }
+
+        .p-btn {
+            flex: 1;
+            height: 32px;
+            border-radius: 7px;
+            border: 0.5px solid rgba(255, 255, 255, 0.07);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background var(--transition), opacity var(--transition);
-            padding: 0 14px;
-            height: 36px;
-            font-family: inherit;
-            white-space: nowrap;
+            gap: 5px;
+            font-family: 'DM Sans', sans-serif;
+            transition: background 0.15s, border-color 0.15s;
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .p-btn-refresh {
+            background: #18181e;
+            color: #8e8e9f;
         }
 
-        .btn--primary {
-            background: var(--color-accent);
-            color: #fff;
-            width: 100%;
+        .p-btn-refresh:hover {
+            background: #1f1f2a;
+            color: #e8e8f2;
         }
 
-        .btn--primary:hover:not(:disabled) {
-            background: #6b51ef;
-        }
-
-        .btn--ghost {
-            background: var(--color-surface-2);
-            color: var(--color-text-muted);
-            flex: 1;
-        }
-
-        .btn--ghost:hover:not(:disabled) {
-            background: var(--color-border);
-            color: var(--color-text);
-        }
-
-        .btn--danger-ghost {
+        .p-btn-logout {
             background: transparent;
-            color: var(--color-danger);
-            border: 1px solid transparent;
-            flex: 1;
+            color: #f06464;
+            border-color: transparent;
+            opacity: 0.8;
         }
 
-        .btn--danger-ghost:hover:not(:disabled) {
-            background: rgba(240, 100, 100, 0.1);
-            border-color: var(--color-danger);
+        .p-btn-logout:hover {
+            background: rgba(240, 100, 100, 0.08);
+            color: #f06464;
+            border-color: rgba(240, 100, 100, 0.2);
+            opacity: 1;
         }
 
-        /* ── Divider ───────────────────────────────────────────────────────── */
-        .divider {
-            border: none;
-            border-top: 1px solid var(--color-border);
-            margin: 0;
-        }
-
-        /* ── Footer ────────────────────────────────────────────────────────── */
-        .footer {
-            padding: 10px 18px;
-            font-size: 10px;
-            color: var(--color-text-muted);
+        /* Error view */
+        .p-error {
+            padding: 32px 20px;
+            align-items: center;
+            gap: 10px;
             text-align: center;
-            border-top: 1px solid var(--color-border);
+        }
+
+        .p-error-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(240, 100, 100, 0.08);
+            border: 0.5px solid rgba(240, 100, 100, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .p-error-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e8e8f2;
+        }
+
+        .p-error-msg {
+            font-size: 11px;
+            color: #8e8e9f;
+            line-height: 1.7;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Footer */
+        .p-footer {
+            padding: 8px 16px;
+            font-size: 9.5px;
+            color: #8e8e9f;
+            display: flex;
+            justify-content: space-between;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.04);
+            background: #0d0d10;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.03em;
+        }
+
+        /* Connect btn */
+        .p-btn-connect {
+            width: 100%;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: #00d97e14;
+            border: 0.5px solid #00d97e35;
+            color: #00d97e;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: background 0.15s;
+        }
+
+        .p-btn-connect:hover {
+            background: #00d97e22;
+        }
+
+        .p-btn-retry {
+            height: 32px;
+            padding: 0 16px;
+            border-radius: 7px;
+            border: 0.5px solid rgba(255, 255, 255, 0.07);
+            background: #18181e;
+            color: #8e8e9f;
+            font-size: 12px;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .p-btn-retry:hover {
+            background: #1f1f2a;
+            color: #e8e8f2;
         }
     </style>
 </head>
 
 <body>
-    <div class="shell">
-        <!-- Header -->
-        <div class="header">
-            <div class="header__logo">⏱</div>
-            <div>
-                <div class="header__title">Logtime Companion</div>
-                <div class="header__subtitle">42 Network · Weekly Tracker</div>
+    <div class="p-header">
+        <div class="p-logo">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="#00d97e" stroke-width="1.25" />
+                <path d="M7 3.5V7l2.5 1.5" stroke="#00d97e" stroke-width="1.25" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </div>
+        <div>
+            <div class="p-title">Logtime Companion</div>
+            <div class="p-subtitle">42Network tracker</div>
+        </div>
+        <div class="p-status-dot offline" id="status-dot"></div>
+    </div>
+
+    <div class="p-view p-loading" id="view-loading">
+        <div class="p-spinner"></div><span>fetching logtime...</span>
+    </div>
+
+    <div class="p-view p-auth" id="view-auth">
+        <div class="p-auth-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <rect x="3" y="9" width="16" height="11" rx="2.5" stroke="#3a3a50" stroke-width="1.25" />
+                <path d="M7 9V6.5a4 4 0 0 1 8 0V9" stroke="#3a3a50" stroke-width="1.25" stroke-linecap="round" />
+                <circle cx="11" cy="14.5" r="1.5" fill="#3a3a50" />
+            </svg>
+        </div>
+        <p class="p-auth-desc">Connect your 42 account to track weekly logtime and milestone alerts.</p>
+        <button class="p-btn-connect"><svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1L9.5 5H13l-3 2.5 1.5 4L7 9l-4.5 2.5L4 7.5 1 5h3.5L7 1z" fill="#00d97e" opacity=".8" />
+            </svg>Connect with 42</button>
+    </div>
+
+    <div class="p-view p-main" id="view-main">
+        <div class="p-section" style="padding: 10px 0;">
+            <div class="timer-row">
+                <div class="timer-cell"><span class="timer-val accent" id="t-days">--</span><span
+                        class="timer-lbl">days</span></div>
+                <div class="timer-cell"><span class="timer-val" id="t-hours">--</span><span
+                        class="timer-lbl">hours</span></div>
+                <div class="timer-cell"><span class="timer-val" id="t-mins">--</span><span class="timer-lbl">mins</span>
+                </div>
             </div>
         </div>
-
-        <!-- ── View: Loading ─────────────────────────────────────────────── -->
-        <div id="view-loading">
-            <div class="spinner"></div>
-            <span>Loading…</span>
+        <div class="p-section">
+            <div class="hours-row">
+                <span class="hours-big" id="h-value">0.0</span><span class="hours-unit">h</span><span
+                    class="hours-quota">/ 30h</span>
+            </div>
+            <div class="prog-track">
+                <div class="prog-tick" style="left: 66.66%;"></div>
+                <div class="prog-tick" style="left: 83.33%;"></div>
+                <div class="prog-fill" id="prog-fill"></div>
+            </div>
+            <div class="prog-labels"><span>0h</span><span>20h</span><span>25h</span><span>30h</span></div>
+            <p class="prog-status" id="prog-status">Calculating...</p>
         </div>
-
-        <!-- ── View: Not authenticated ───────────────────────────────────── -->
-        <div id="view-unauthenticated" hidden>
-            <p class="connect-desc">
-                Connect your 42 account to track your weekly logtime and receive
-                milestone notifications.
-            </p>
-            <button id="btn-connect" class="btn btn--primary">
-                🔐 Connect with 42
-            </button>
-        </div>
-
-        <!-- ── View: Remaining days ───────────────────────────────────────── -->
-        <div style="text-align: center; padding-top: 10px;">
-            <div
-                style="font-size: 15px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">
-                Time Remaining</div>
-            <div id="time-left-text"
-                style="font-size: 35px; font-weight: 800; color: var(--color-accent); font-variant-numeric: tabular-nums;">
-                --d --h</div>
-        </div>
-
-        <!-- ── View: Authenticated ───────────────────────────────────────── -->
-        <div id="view-authenticated" hidden>
-
-            <div style="margin-top: 5px;">
-                <label style="font-size: 11px; color: var(--color-text-muted);">Week starts on:</label>
-                <select id="start-day-select"
-                    style="background: var(--color-surface-2); color: white; border: 1px solid var(--color-border); padding: 5px; border-radius: 5px; width: 100%; margin-top: 5px;">
+        <div class="p-section" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="p-select-wrap">
+                <span class="p-select-lbl">Week starts</span>
+                <select class="p-select" id="week-start">
                     <option value="0">Sunday</option>
                     <option value="1">Monday</option>
                     <option value="2">Tuesday</option>
@@ -384,58 +549,30 @@
                     <option value="6">Saturday</option>
                 </select>
             </div>
-            <!-- Hours display -->
-            <div>
-                <div class="hours-display">
-                    <span class="hours-value" id="hours-value">0.0</span>
-                    <span class="hours-unit">h</span>
-                    <span class="hours-quota">/ 30h</span>
-                </div>
-            </div>
-
-            <!-- Progress bar with milestone ticks -->
-            <div class="progress-wrap">
-                <div class="progress-bar" style="position:relative;">
-                    <!-- Milestone tick marks at 20h and 25h -->
-                    <div
-                        style="position:absolute;top:0;bottom:0;left:66.66%;width:1px;background:rgba(255,255,255,0.15);z-index:1;">
-                    </div>
-                    <div
-                        style="position:absolute;top:0;bottom:0;left:83.33%;width:1px;background:rgba(255,255,255,0.15);z-index:1;">
-                    </div>
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <!-- Tick labels -->
-                <div style="position:relative;height:14px;font-size:9px;color:var(--color-text-muted);">
-                    <span style="position:absolute;left:66.66%;transform:translateX(-50%);">20h</span>
-                    <span style="position:absolute;left:83.33%;transform:translateX(-50%);">25h</span>
-                    <span style="position:absolute;right:0;">30h</span>
-                </div>
-                <p class="status-text" id="status-text"></p>
-            </div>
-
-            <hr class="divider" />
-
-            <!-- Action row -->
-            <div class="action-row">
-                <button id="btn-refresh" class="btn btn--ghost">↻ Refresh</button>
-                <button id="btn-logout" class="btn btn--danger-ghost">Sign out</button>
-            </div>
         </div>
-
-        <!-- ── View: Error ───────────────────────────────────────────────── -->
-        <div id="view-error" hidden>
-            <div class="error-icon">⚠️</div>
-            <div class="error-title">Something went wrong</div>
-            <p class="error-msg" id="error-msg"></p>
-            <button id="btn-retry" class="btn btn--ghost">Try again</button>
+        <div class="p-actions">
+            <button class="p-btn p-btn-refresh"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"
+                    stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+                    <path d="M9.5 2A5 5 0 1 0 10 5.5" />
+                    <path d="M10 1v2.5H7.5" />
+                </svg>Refresh</button>
+            <button class="p-btn p-btn-logout">Sign out</button>
         </div>
     </div>
 
-    <!-- Footer shown always -->
-    <div class="footer">Updates every 15 min · Data from 42 API</div>
+    <div class="p-view p-error" id="view-error">
+        <div class="p-error-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M9 6v4M9 12.5v.5" stroke="#f06464" stroke-width="1.4" stroke-linecap="round" />
+                <path d="M1.5 15L9 3l7.5 12H1.5z" stroke="#f06464" stroke-width="1.2" stroke-linejoin="round" />
+            </svg></div>
+        <div class="p-error-title">Request failed</div>
+        <p class="p-error-msg" id="error-msg"></p>
+        <button class="p-btn-retry">Try again</button>
+    </div>
 
-    <script type="module" src="popup.js"></script>
+    <div class="p-footer"><span>auto-refresh 15min</span><span>42 API</span></div>
+
+    <script src="popup.js"></script>
 </body>
 
 </html>
