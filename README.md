@@ -2,6 +2,8 @@
 
 A lightweight Chrome Extension strictly for 42 Network students to track their weekly logtime and get milestone notifications (20h, 25h, and 30h).
 
+![Screenshot of Logtime Companion Interface](./screenshots/screenshot.png)
+
 ## 🚀 How to Install (Chrome / Brave)
 
 Since this extension is currently in beta and not yet published on the Chrome Web Store, you need to install it manually. Follow these simple steps:
@@ -21,6 +23,8 @@ Since this extension is currently in beta and not yet published on the Chrome We
 3. The Logtime Companion card should now appear in your list of extensions.
 
 ### Step 4: Pin and Connect
+![How to pin the extension](./screenshots/screenshot_login.png)
+
 1. Click the puzzle icon 🧩 in the top-right of your browser's toolbar.
 2. Click the pin icon 📌 next to **Logtime Companion** to keep it visible.
 3. Click the extension icon, select which day your week starts on, and click **Connect with 42**.
