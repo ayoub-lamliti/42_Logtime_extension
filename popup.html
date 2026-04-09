@@ -136,6 +136,7 @@
         /* ── Authenticated view ────────────────────────────────────────────── */
         #view-authenticated {
             padding: 18px;
+            padding-top: 2px;
             display: flex;
             flex-direction: column;
             gap: 18px;
@@ -357,11 +358,23 @@
             </button>
         </div>
 
+        <!-- ── View: Remaining days ───────────────────────────────────────── -->
+        <div style="text-align: center; padding-top: 10px;">
+            <div
+                style="font-size: 15px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">
+                Time Remaining</div>
+            <div id="time-left-text"
+                style="font-size: 35px; font-weight: 800; color: var(--color-accent); font-variant-numeric: tabular-nums;">
+                --d --h</div>
+        </div>
+
         <!-- ── View: Authenticated ───────────────────────────────────────── -->
         <div id="view-authenticated" hidden>
-            <div style="margin-top: 15px;">
+
+            <div style="margin-top: 5px;">
                 <label style="font-size: 11px; color: var(--color-text-muted);">Week starts on:</label>
-                <select id="start-day-select" style="background: var(--color-surface-2); color: white; border: 1px solid var(--color-border); padding: 5px; border-radius: 5px; width: 100%; margin-top: 5px;">
+                <select id="start-day-select"
+                    style="background: var(--color-surface-2); color: white; border: 1px solid var(--color-border); padding: 5px; border-radius: 5px; width: 100%; margin-top: 5px;">
                     <option value="0">Sunday</option>
                     <option value="1">Monday</option>
                     <option value="2">Tuesday</option>

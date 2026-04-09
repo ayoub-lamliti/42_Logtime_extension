@@ -77,6 +77,27 @@
     viewAuthenticated.hidden = view !== "authenticated";
     viewError.hidden = view !== "error";
   }
+  function getRemainingTime() {
+    const selectVal = parseInt(document.getElementById("start-day-select").value, 10);
+    const targetDay = isNaN(selectVal) ? 1 : selectVal;
+
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    let diff = dayOfWeek - targetDay;
+    if (diff < 0) {
+      diff += 7;
+    }
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - diff);
+    weekStart.setHours(0, 0, 0, 0);
+
+    const deadline = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const remainingMs = deadline.getTime() - now.getTime();
+    const days = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    return { days, hours };
+  }
   function showError(message) {
     elErrorMsg.textContent = message;
     showView("error");
@@ -94,12 +115,21 @@
       elProgressFill.style.backgroundColor = "var(--color-success)";
     }
     const remaining = Math.max(0, WEEKLY_QUOTA_HOURS - hours);
+    const timeLeftText = document.getElementById("time-left-text");
+
     if (hours >= WEEKLY_QUOTA_HOURS) {
-      elStatusText.textContent = "\u2705 Weekly quota complete!";
+      elStatusText.textContent = "✅ Weekly quota complete!";
+      if (timeLeftText) timeLeftText.textContent = "🎉 Done!";
     } else {
       const nextMilestone = MILESTONES.find((m) => hours < m) ?? WEEKLY_QUOTA_HOURS;
       const toNext = (nextMilestone - hours).toFixed(1);
-      elStatusText.textContent = `${remaining.toFixed(1)}h to quota \xB7 ${toNext}h to ${nextMilestone}h milestone`;
+
+      const timeLeft = getRemainingTime();
+      if (timeLeftText) {
+        timeLeftText.textContent = `${timeLeft.days}d ${timeLeft.hours}h`;
+      }
+
+      elStatusText.textContent = `${remaining.toFixed(1)}h to quota · ${toNext}h to ${nextMilestone}h`;
     }
   }
   function sendMessage(message) {
@@ -120,6 +150,10 @@
       showView("unauthenticated");
       return;
     }
+
+    const savedDay = await getStartDay();
+    document.getElementById("start-day-select").value = savedDay.toString();
+
     const hours = await getStoredHours();
     if (hours === null) {
       await sendMessage({ type: "FORCE_CHECK" }).catch(() => null);
@@ -133,8 +167,6 @@
       renderProgress(hours);
     }
     showView("authenticated");
-    const savedDay = await getStartDay();
-    startDaySelect.value = savedDay.toString();
   }
   btnConnect.addEventListener("click", async () => {
     btnConnect.disabled = true;
@@ -172,15 +204,15 @@
   startDaySelect.addEventListener("change", async (e) => {
     const newDay = parseInt(e.target.value, 10);
     await setStartDay(newDay);
-    
+
     btnRefresh.disabled = true;
     showView("loading");
-    
+
     await sendMessage({ type: "FORCE_CHECK" }).catch(() => null);
-    
+
     const hours = await getStoredHours();
     if (hours !== null) renderProgress(hours);
-    
+
     showView("authenticated");
     btnRefresh.disabled = false;
   });
