@@ -6,37 +6,34 @@
     <title>Logtime Companion</title>
     <style>
         :root {
-            --bg:        #0d0d0d;
-            --surface:   #161616;
-            --surface2:  #1e1e1e;
-            --border:    rgba(255,255,255,0.07);
-            --border-em: rgba(255,255,255,0.13);
-            --fg:        #f2f2f2;
-            --muted:     #686868;
-            --subtle:    #3a3a3a;
-            --accent:    #22c55e;
-            --accent-dim:#14532d;
-            --warn:      #f59e0b;
-            --warn-dim:  #451a03;
-            --danger:    #ef4444;
-            --danger-dim:#450a0a;
-            /* System font stacks — no external requests needed */
-            --mono: ui-monospace, 'Cascadia Code', 'Menlo', 'Consolas', monospace;
-            --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            --bg:        #09090f;
+            --card:      #13131f;
+            --card2:     #1c1c2c;
+            --border:    rgba(255,255,255,0.06);
+            --border-em: rgba(122,97,255,0.3);
+            --fg:        #ffffff;
+            --muted:     #6b6b80;
+            --muted2:    #4a4a5c;
+            --accent:    #7a61ff;
+            --accent-s:  #9b85ff;
+            --accent-bg: rgba(122,97,255,0.12);
+            --warn:      #ff9f0a;
+            --warn-bg:   rgba(255,159,10,0.12);
+            --danger:    #ff453a;
+            --danger-bg: rgba(255,69,58,0.12);
+            --mono: ui-monospace,'Cascadia Code','Menlo','Consolas',monospace;
+            --sans: -apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;
+            --circ: 452;
         }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             width: 320px;
             background: var(--bg);
             color: var(--fg);
             font-family: var(--sans);
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1.5;
             user-select: none;
             overflow: hidden;
@@ -47,55 +44,39 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 11px 14px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
+            padding: 14px 16px 12px;
         }
 
         .p-logo {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             background: var(--accent);
-            color: #000;
-            font-family: var(--mono);
-            font-size: 13px;
-            font-weight: 700;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
             flex-shrink: 0;
         }
 
-        .p-title-group {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-
-        .p-title {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.01em;
-            color: var(--fg);
-        }
-
-        .p-subtitle {
-            font-size: 10px;
-            color: var(--muted);
-        }
+        .p-title-group { display: flex; flex-direction: column; }
+        .p-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+        .p-subtitle { font-size: 11px; color: var(--muted); }
 
         .p-status-pill {
             margin-left: auto;
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 10px;
-            color: var(--muted);
-            background: var(--surface2);
-            border: 1px solid var(--border);
+            padding: 4px 10px;
             border-radius: 20px;
-            padding: 3px 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 11px;
+            color: var(--muted);
         }
 
         .p-status-dot {
@@ -103,262 +84,238 @@
             height: 6px;
             border-radius: 50%;
             background: var(--accent);
-            flex-shrink: 0;
         }
-
-        .p-status-dot.offline { background: var(--subtle); }
+        .p-status-dot.offline { background: var(--muted2); }
         .p-status-dot.error   { background: var(--danger); }
-
-        .p-status-pill .dot-label { color: var(--muted); }
-        .p-status-pill .dot-label.live { color: var(--accent); }
 
         /* ── VIEWS ── */
         .p-view { display: none; flex-direction: column; }
         .p-view.active { display: flex; }
 
-        /* ── HERO ── */
-        .hero-section {
-            padding: 20px 16px 18px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .hero-label {
-            font-size: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            margin-bottom: 10px;
-        }
-
-        .hours-display {
+        /* ── RING HERO CARD ── */
+        .hero-card {
+            margin: 0 12px 10px;
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 24px 20px 20px;
             display: flex;
-            align-items: baseline;
-            gap: 6px;
-            margin-bottom: 20px;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .hours-big {
+        .ring-wrap {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 16px;
+        }
+
+        .ring-svg {
+            width: 160px;
+            height: 160px;
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg-circle {
+            fill: none;
+            stroke: var(--card2);
+            stroke-width: 14;
+        }
+
+        .ring-arc {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke-dasharray: 452;
+            stroke-dashoffset: 452;
+            transition: stroke-dashoffset 0.5s cubic-bezier(0.4,0,0.2,1),
+                        stroke 0.3s ease;
+        }
+
+        .ring-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ring-hours {
             font-family: var(--mono);
-            font-size: 52px;
+            font-size: 38px;
             font-weight: 700;
+            letter-spacing: -2px;
             line-height: 1;
-            color: var(--fg);
-            letter-spacing: -1px;
             font-variant-numeric: tabular-nums;
             font-feature-settings: "tnum";
         }
 
-        .hours-of {
-            font-family: var(--mono);
-            font-size: 14px;
+        .ring-goal {
+            font-size: 11px;
             color: var(--muted);
-            font-weight: 500;
+            margin-top: 3px;
         }
 
-        /* ── PROGRESS ── */
-        .prog-wrap {
-            position: relative;
+        .hero-status {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.5;
         }
 
-        .prog-bar-outer {
-            width: 100%;
-            height: 6px;
-            background: var(--surface2);
-            border-radius: 99px;
-            overflow: hidden;
-        }
+        .hero-status .accent  { color: var(--accent-s);  font-weight: 600; }
+        .hero-status .warn    { color: var(--warn);   font-weight: 600; }
+        .hero-status .danger  { color: var(--danger); font-weight: 600; }
 
-        .prog-fill {
-            height: 100%;
-            background: var(--accent);
-            width: 0%;
-            border-radius: 99px;
-            transition: width 0.3s ease;
-        }
-
+        /* hidden JS target for progress */
+        .prog-hidden { display: none; }
+        .prog-fill { width: 0%; }
         .prog-fill.warn   { background: var(--warn); }
         .prog-fill.danger { background: var(--danger); }
 
-        /* milestone ticks */
-        .prog-ticks {
-            position: relative;
-            height: 10px;
-            margin-top: 4px;
-        }
-
-        .prog-tick {
-            position: absolute;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .prog-tick .tick-line {
-            width: 1px;
-            height: 4px;
-            background: var(--subtle);
-        }
-
-        .prog-tick .tick-val {
-            font-family: var(--mono);
-            font-size: 9px;
-            color: var(--subtle);
-        }
-
-        .prog-status {
-            margin-top: 14px;
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        .prog-status .accent  { color: var(--accent);  font-weight: 600; font-family: var(--mono); }
-        .prog-status .warn    { color: var(--warn);    font-weight: 600; font-family: var(--mono); }
-        .prog-status .danger  { color: var(--danger);  font-weight: 600; font-family: var(--mono); }
-
-        /* ── COUNTDOWN ── */
-        .secondary-section {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
+        /* ── COUNTDOWN CARDS ── */
+        .section-wrap {
+            margin: 0 12px 10px;
         }
 
         .section-label {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.07em;
             color: var(--muted);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            padding-left: 2px;
         }
 
         .countdown-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 8px;
         }
 
-        .countdown-cell {
-            background: var(--surface2);
+        .cd-cell {
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 8px 8px;
+            border-radius: 14px;
+            padding: 12px 8px 10px;
             text-align: center;
         }
 
-        .countdown-val {
+        .cd-val {
             font-family: var(--mono);
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--fg);
             display: block;
             line-height: 1;
             font-variant-numeric: tabular-nums;
             font-feature-settings: "tnum";
         }
 
-        .countdown-unit {
-            font-size: 9px;
+        #t-days { color: var(--accent-s); }
+
+        .cd-unit {
+            display: block;
+            font-size: 10px;
             color: var(--muted);
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-top: 4px;
-            display: block;
+            letter-spacing: 0.05em;
+            margin-top: 5px;
         }
 
         /* ── SELECT ── */
-        .input-group label {
-            display: block;
-            font-size: 10px;
-            font-weight: 500;
-            color: var(--muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+        .select-wrap {
+            position: relative;
         }
 
         .p-select {
             width: 100%;
-            background: var(--surface2);
+            background: var(--card);
             color: var(--fg);
-            border: 1px solid var(--border-em);
-            border-radius: 7px;
-            padding: 8px 10px;
-            font-size: 12px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 13px;
             font-family: var(--sans);
             appearance: none;
             cursor: pointer;
         }
 
         .p-select:focus {
+            outline: none;
             border-color: var(--accent);
-            outline: 2px solid rgba(34,197,94,0.2);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+
+        .select-chevron {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--muted);
         }
 
         /* ── ACTIONS ── */
-        .p-actions {
-            padding: 12px 16px;
+        .actions-wrap {
+            margin: 0 12px 16px;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
 
         .btn {
-            background: var(--surface2);
-            color: var(--fg);
-            border: 1px solid var(--border-em);
-            border-radius: 7px;
-            padding: 10px;
-            font-size: 12px;
-            font-weight: 500;
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 13px;
+            font-size: 14px;
+            font-weight: 600;
             font-family: var(--sans);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            width: 100%;
-            transition: background 0.1s, border-color 0.1s;
+            gap: 7px;
+            transition: opacity 0.15s, transform 0.1s;
         }
 
-        .btn:hover { background: var(--surface); border-color: var(--border-em); }
+        .btn:hover  { opacity: 0.88; }
+        .btn:active { transform: scale(0.98); opacity: 0.8; }
 
-        .btn-icon {
-            width: 14px;
-            height: 14px;
-            opacity: 0.6;
-        }
-
-        .p-btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
+        .p-btn-refresh { background: var(--accent); }
 
         .p-btn-logout {
             background: transparent;
             border: none;
             color: var(--muted);
-            font-size: 11px;
+            font-size: 12px;
             font-family: var(--sans);
             cursor: pointer;
-            padding: 4px 0 8px;
+            padding: 4px 0 6px;
             text-align: center;
             width: 100%;
-            transition: color 0.1s;
+            transition: color 0.15s;
         }
 
         .p-btn-logout:hover { color: var(--danger); }
 
         /* ── OTHER VIEWS ── */
         .p-loading, .p-auth, .p-error {
-            padding: 40px 24px;
+            padding: 48px 24px;
             text-align: center;
             align-items: center;
         }
 
         .p-spinner {
-            width: 22px;
-            height: 22px;
-            border: 2px solid var(--surface2);
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--card2);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
@@ -367,64 +324,49 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .loading-text {
-            color: var(--muted);
-            font-size: 11px;
-        }
+        .loading-text { color: var(--muted); font-size: 13px; }
 
         /* Auth */
         .p-auth-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--surface2);
+            width: 52px;
+            height: 52px;
+            background: var(--accent-bg);
             border: 1px solid var(--border-em);
-            border-radius: 12px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 14px;
+            margin: 0 auto 16px;
         }
 
-        .p-auth-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
+        .p-auth-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 
         .p-auth-desc {
             color: var(--muted);
-            font-size: 11px;
-            margin-bottom: 20px;
+            font-size: 12px;
+            margin-bottom: 24px;
             line-height: 1.6;
         }
 
         .p-btn-connect {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .p-btn-connect:hover {
-            background: rgba(34,197,94,0.08);
+            background: var(--accent);
+            color: #fff;
         }
 
         /* Error */
         .p-error-icon {
-            color: var(--danger);
-            background: var(--danger-dim);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 52px;
+            height: 52px;
+            background: var(--danger-bg);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 14px;
+            margin: 0 auto 16px;
+            color: var(--danger);
         }
 
-        .p-error-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
+        .p-error-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 
         .p-error-msg {
             color: var(--muted);
@@ -432,20 +374,19 @@
             margin-bottom: 20px;
             word-break: break-word;
             line-height: 1.6;
-            padding: 10px;
-            background: var(--surface2);
-            border-radius: 7px;
+            padding: 10px 12px;
+            background: var(--card);
+            border-radius: 10px;
             font-family: var(--mono);
         }
 
         .p-btn-retry {
-            border-color: var(--border-em);
-        }
-
-        .p-btn-retry:hover {
-            border-color: var(--fg);
+            background: var(--card2);
+            border: 1px solid var(--border-em);
             color: var(--fg);
         }
+
+        .p-btn-retry:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -459,7 +400,7 @@
         </div>
         <div class="p-status-pill">
             <div class="p-status-dot offline" id="status-dot"></div>
-            <span class="dot-label" id="status-label">Offline</span>
+            <span id="status-label">Offline</span>
         </div>
     </div>
 
@@ -472,8 +413,8 @@
     <!-- AUTH -->
     <div class="p-view p-auth" id="view-auth">
         <div class="p-auth-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted)">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
         </div>
@@ -485,54 +426,49 @@
     <!-- MAIN -->
     <div class="p-view p-main" id="view-main">
 
-        <!-- Hero: hours -->
-        <div class="hero-section">
-            <div class="hero-label">Hours logged this week</div>
-            <div class="hours-display">
-                <span class="hours-big" id="h-value">0.0</span>
-                <span class="hours-of">/ 30h</span>
-            </div>
-
-            <!-- Progress bar -->
-            <div class="prog-wrap">
-                <div class="prog-bar-outer">
-                    <div class="prog-fill" id="prog-fill"></div>
-                </div>
-                <div class="prog-ticks">
-                    <div class="prog-tick" style="left:66.7%">
-                        <div class="tick-line"></div>
-                        <div class="tick-val">20h</div>
-                    </div>
-                    <div class="prog-tick" style="left:83.3%">
-                        <div class="tick-line"></div>
-                        <div class="tick-val">25h</div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="prog-status" id="prog-status">Calculating…</p>
+        <!-- Hidden prog-fill target (JS compatibility) -->
+        <div class="prog-hidden">
+            <div class="prog-fill" id="prog-fill"></div>
         </div>
 
-        <!-- Countdown + settings -->
-        <div class="secondary-section">
-            <div class="section-label">Week ends in</div>
-            <div class="countdown-grid">
-                <div class="countdown-cell">
-                    <span class="countdown-val" id="t-days">--</span>
-                    <span class="countdown-unit">Days</span>
-                </div>
-                <div class="countdown-cell">
-                    <span class="countdown-val" id="t-hours">--</span>
-                    <span class="countdown-unit">Hours</span>
-                </div>
-                <div class="countdown-cell">
-                    <span class="countdown-val" id="t-mins">--</span>
-                    <span class="countdown-unit">Minutes</span>
+        <!-- Ring card -->
+        <div class="hero-card">
+            <div class="ring-wrap">
+                <svg class="ring-svg" viewBox="0 0 160 160">
+                    <circle class="ring-bg-circle" cx="80" cy="80" r="72"/>
+                    <circle class="ring-arc" id="ring-arc" cx="80" cy="80" r="72"/>
+                </svg>
+                <div class="ring-center">
+                    <span class="ring-hours" id="h-value">0.0</span>
+                    <span class="ring-goal">of 30h</span>
                 </div>
             </div>
+            <p class="hero-status" id="prog-status">Calculating…</p>
+        </div>
 
-            <div class="input-group">
-                <label for="week-start">Week starts on</label>
+        <!-- Countdown -->
+        <div class="section-wrap">
+            <div class="section-label">Week ends in</div>
+            <div class="countdown-grid">
+                <div class="cd-cell">
+                    <span class="cd-val" id="t-days">--</span>
+                    <span class="cd-unit">Days</span>
+                </div>
+                <div class="cd-cell">
+                    <span class="cd-val" id="t-hours">--</span>
+                    <span class="cd-unit">Hours</span>
+                </div>
+                <div class="cd-cell">
+                    <span class="cd-val" id="t-mins">--</span>
+                    <span class="cd-unit">Mins</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Week start -->
+        <div class="section-wrap">
+            <div class="section-label">Week starts on</div>
+            <div class="select-wrap">
                 <select class="p-select" id="week-start">
                     <option value="0">Sunday</option>
                     <option value="1">Monday</option>
@@ -542,13 +478,16 @@
                     <option value="5">Friday</option>
                     <option value="6">Saturday</option>
                 </select>
+                <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
             </div>
         </div>
 
         <!-- Actions -->
-        <div class="p-actions">
+        <div class="actions-wrap">
             <button class="btn p-btn-refresh">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
                 </svg>
@@ -562,7 +501,7 @@
     <!-- ERROR -->
     <div class="p-view p-error" id="view-error">
         <div class="p-error-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
         </div>
@@ -571,6 +510,7 @@
         <button class="btn p-btn-retry">Try again</button>
     </div>
 
+    <script src="ring-sync.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>
