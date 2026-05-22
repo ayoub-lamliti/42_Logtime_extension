@@ -1,27 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Logtime Companion</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap');
 
-        *,
-        *::before,
-        *::after {
+        :root {
+            --bg:        #0d0d0d;
+            --surface:   #161616;
+            --surface2:  #1e1e1e;
+            --border:    rgba(255,255,255,0.07);
+            --border-em: rgba(255,255,255,0.13);
+            --fg:        #f2f2f2;
+            --muted:     #686868;
+            --subtle:    #3a3a3a;
+            --accent:    #22c55e;
+            --accent-dim:#14532d;
+            --warn:      #f59e0b;
+            --warn-dim:  #451a03;
+            --danger:    #ef4444;
+            --danger-dim:#450a0a;
+            --mono:      'JetBrains Mono', monospace;
+            --sans:      'Inter', system-ui, sans-serif;
+        }
+
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
         body {
-            width: 300px;
-            background: #111114;
-            color: #d4d4e0;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
+            width: 320px;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: var(--sans);
+            font-size: 12px;
             line-height: 1.5;
             user-select: none;
             overflow: hidden;
@@ -32,513 +48,488 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 14px 16px 12px;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
-            background: #0e0e11;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
         }
 
         .p-logo {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            background: #00d97e18;
-            border: 0.5px solid #00d97e40;
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: #000;
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 6px;
             flex-shrink: 0;
         }
 
-        .p-logo svg {
-            display: block;
+        .p-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
         }
 
         .p-title {
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
-            color: #e8e8f2;
             letter-spacing: 0.01em;
+            color: var(--fg);
         }
 
         .p-subtitle {
-            font-size: 10.5px;
-            color: #8e8e9f;
-            margin-top: 1px;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.03em;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .p-status-pill {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            color: var(--muted);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3px 8px;
         }
 
         .p-status-dot {
-            margin-left: auto;
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #00d97e;
-            box-shadow: 0 0 6px #00d97e80;
+            background: var(--accent);
             flex-shrink: 0;
         }
 
-        .p-status-dot.offline {
-            background: #555566;
-            box-shadow: none;
-        }
+        .p-status-dot.offline { background: var(--subtle); }
+        .p-status-dot.error   { background: var(--danger); }
 
-        .p-status-dot.error {
-            background: #f06464;
-            box-shadow: 0 0 6px #f0646460;
-        }
+        .p-status-pill .dot-label { color: var(--muted); }
+        .p-status-pill .dot-label.live { color: var(--accent); }
 
         /* ── VIEWS ── */
-        .p-view {
-            display: none;
+        .p-view { display: none; flex-direction: column; }
+        .p-view.active { display: flex; }
+
+        /* ── HERO ── */
+        .hero-section {
+            padding: 20px 16px 18px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .p-view.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ── LOADING VIEW ── */
-        .p-loading {
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 42px 0;
-            color: #8e8e9f;
-            font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .p-spinner {
-            width: 16px;
-            height: 16px;
-            border: 1.5px solid #22222e;
-            border-top-color: #00d97e;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ── AUTH VIEW ── */
-        .p-auth {
-            padding: 28px 20px;
-            align-items: center;
-            gap: 14px;
-            text-align: center;
-        }
-
-        .p-auth-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: #1a1a22;
-            border: 0.5px solid rgba(255, 255, 255, 0.07);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .p-auth-desc {
-            font-size: 12px;
-            color: #8e8e9f;
-            line-height: 1.7;
-            max-width: 220px;
-        }
-
-        /* ── MAIN VIEW ── */
-        .p-main {
-            padding: 0;
-        }
-
-        .p-section {
-            padding: 14px 16px;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .p-section:last-child {
-            border-bottom: none;
-        }
-
-        /* Timer row */
-        .timer-row {
-            display: flex;
-            align-items: stretch;
-            gap: 0;
-        }
-
-        .timer-cell {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 10px 0;
-        }
-
-        .timer-cell+.timer-cell {
-            border-left: 0.5px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .timer-val {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 26px;
-            font-weight: 700;
-            color: #e8e8f2;
-            line-height: 1;
-            letter-spacing: -0.02em;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .timer-val.accent {
-            color: #00d97e;
-        }
-
-        .timer-val.warn {
-            color: #f7b731;
-        }
-
-        .timer-lbl {
-            font-size: 9.5px;
-            color: #8e8e9f;
-            letter-spacing: 0.08em;
+        .hero-label {
+            font-size: 10px;
+            font-weight: 500;
             text-transform: uppercase;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Hours section */
-        .hours-row {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .hours-big {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 38px;
-            font-weight: 700;
-            color: #e8e8f2;
-            line-height: 1;
-            letter-spacing: -0.03em;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .hours-unit {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 18px;
-            color: #8e8e9f;
-            font-weight: 600;
-        }
-
-        .hours-quota {
-            margin-left: auto;
-            font-size: 11px;
-            color: #8e8e9f;
-            font-family: 'JetBrains Mono', monospace;
-            align-self: center;
-        }
-
-        /* Progress */
-        .prog-track {
-            height: 4px;
-            background: #1c1c26;
-            border-radius: 99px;
-            overflow: visible;
-            position: relative;
+            letter-spacing: 0.08em;
+            color: var(--muted);
             margin-bottom: 10px;
         }
 
-        .prog-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
+        .hours-display {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .hours-big {
+            font-family: var(--mono);
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--fg);
+            letter-spacing: -2px;
+        }
+
+        .hours-of {
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        /* ── PROGRESS ── */
+        .prog-wrap {
+            position: relative;
+        }
+
+        .prog-bar-outer {
+            width: 100%;
+            height: 6px;
+            background: var(--surface2);
             border-radius: 99px;
-            background: #00d97e;
-            transition: width 0.5s cubic-bezier(.4, 0, .2, 1), background 0.4s;
-            box-shadow: 0 0 8px #00d97e60;
+            overflow: hidden;
+        }
+
+        .prog-fill {
+            height: 100%;
+            background: var(--accent);
             width: 0%;
+            border-radius: 99px;
+            transition: width 0.3s ease;
         }
 
-        .prog-fill.warn {
-            background: #f7b731;
-            box-shadow: 0 0 8px #f7b73160;
-        }
+        .prog-fill.warn   { background: var(--warn); }
+        .prog-fill.danger { background: var(--danger); }
 
-        .prog-fill.danger {
-            background: #f06464;
-            box-shadow: 0 0 8px #f0646460;
+        /* milestone ticks */
+        .prog-ticks {
+            position: relative;
+            height: 10px;
+            margin-top: 4px;
         }
 
         .prog-tick {
             position: absolute;
-            top: -4px;
-            bottom: -4px;
-            width: 1px;
-            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
-        .prog-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 9.5px;
-            color: #8e8e9f;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.04em;
-            padding: 0 1px;
-            margin-bottom: 8px;
+        .prog-tick .tick-line {
+            width: 1px;
+            height: 4px;
+            background: var(--subtle);
+        }
+
+        .prog-tick .tick-val {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--subtle);
         }
 
         .prog-status {
+            margin-top: 14px;
             font-size: 11px;
-            color: #8e8e9f;
+            color: var(--muted);
+        }
+
+        .prog-status .accent  { color: var(--accent);  font-weight: 600; font-family: var(--mono); }
+        .prog-status .warn    { color: var(--warn);    font-weight: 600; font-family: var(--mono); }
+        .prog-status .danger  { color: var(--danger);  font-weight: 600; font-family: var(--mono); }
+
+        /* ── COUNTDOWN ── */
+        .secondary-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .countdown-cell {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 8px 8px;
             text-align: center;
-            line-height: 1.5;
-            font-family: 'JetBrains Mono', monospace;
         }
 
-        .prog-status .highlight {
-            color: #00d97e;
+        .countdown-val {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--fg);
+            display: block;
+            line-height: 1;
         }
 
-        .prog-status .highlight.warn {
-            color: #f7b731;
+        .countdown-unit {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 4px;
+            display: block;
         }
 
-        /* Select */
-        .p-select-wrap {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .p-select-lbl {
-            font-size: 11px;
-            color: #8e8e9f;
-            white-space: nowrap;
-            flex-shrink: 0;
+        /* ── SELECT ── */
+        .input-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .p-select {
-            flex: 1;
-            background: #18181e;
-            color: #e8e8f2;
-            border: 0.5px solid rgba(255, 255, 255, 0.07);
-            border-radius: 6px;
-            padding: 5px 8px;
-            font-size: 11.5px;
-            font-family: 'DM Sans', sans-serif;
-            outline: none;
+            width: 100%;
+            background: var(--surface2);
+            color: var(--fg);
+            border: 1px solid var(--border-em);
+            border-radius: 7px;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-family: var(--sans);
+            appearance: none;
             cursor: pointer;
         }
 
         .p-select:focus {
-            border-color: rgba(0, 217, 126, 0.3);
+            border-color: var(--accent);
+            outline: 2px solid rgba(34,197,94,0.2);
         }
 
-        /* Action row */
+        /* ── ACTIONS ── */
         .p-actions {
+            padding: 12px 16px;
             display: flex;
-            gap: 6px;
-            padding: 12px 16px 14px;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .p-btn {
-            flex: 1;
-            height: 32px;
+        .btn {
+            background: var(--surface2);
+            color: var(--fg);
+            border: 1px solid var(--border-em);
             border-radius: 7px;
-            border: 0.5px solid rgba(255, 255, 255, 0.07);
+            padding: 10px;
             font-size: 12px;
             font-weight: 500;
+            font-family: var(--sans);
             cursor: pointer;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            font-family: 'DM Sans', sans-serif;
-            transition: background 0.15s, border-color 0.15s;
+            gap: 6px;
+            width: 100%;
+            transition: background 0.1s, border-color 0.1s;
         }
 
-        .p-btn-refresh {
-            background: #18181e;
-            color: #8e8e9f;
+        .btn:hover { background: var(--surface); border-color: var(--border-em); }
+
+        .btn-icon {
+            width: 14px;
+            height: 14px;
+            opacity: 0.6;
         }
 
-        .p-btn-refresh:hover {
-            background: #1f1f2a;
-            color: #e8e8f2;
-        }
+        .p-btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
 
         .p-btn-logout {
             background: transparent;
-            color: #f06464;
-            border-color: transparent;
-            opacity: 0.8;
-        }
-
-        .p-btn-logout:hover {
-            background: rgba(240, 100, 100, 0.08);
-            color: #f06464;
-            border-color: rgba(240, 100, 100, 0.2);
-            opacity: 1;
-        }
-
-        /* Error view */
-        .p-error {
-            padding: 32px 20px;
-            align-items: center;
-            gap: 10px;
+            border: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-family: var(--sans);
+            cursor: pointer;
+            padding: 4px 0 8px;
             text-align: center;
+            width: 100%;
+            transition: color 0.1s;
         }
 
-        .p-error-icon {
+        .p-btn-logout:hover { color: var(--danger); }
+
+        /* ── OTHER VIEWS ── */
+        .p-loading, .p-auth, .p-error {
+            padding: 40px 24px;
+            text-align: center;
+            align-items: center;
+        }
+
+        .p-spinner {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--surface2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-bottom: 14px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* Auth */
+        .p-auth-icon {
             width: 40px;
             height: 40px;
-            border-radius: 10px;
-            background: rgba(240, 100, 100, 0.08);
-            border: 0.5px solid rgba(240, 100, 100, 0.2);
+            background: var(--surface2);
+            border: 1px solid var(--border-em);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .p-auth-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .p-auth-desc {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .p-btn-connect {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .p-btn-connect:hover {
+            background: rgba(34,197,94,0.08);
+        }
+
+        /* Error */
+        .p-error-icon {
+            color: var(--danger);
+            background: var(--danger-dim);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
         }
 
         .p-error-title {
             font-size: 13px;
             font-weight: 600;
-            color: #e8e8f2;
+            margin-bottom: 6px;
         }
 
         .p-error-msg {
+            color: var(--muted);
             font-size: 11px;
-            color: #8e8e9f;
-            line-height: 1.7;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Footer */
-        .p-footer {
-            padding: 8px 16px;
-            font-size: 9.5px;
-            color: #8e8e9f;
-            display: flex;
-            justify-content: space-between;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.04);
-            background: #0d0d10;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.03em;
-        }
-
-        /* Connect btn */
-        .p-btn-connect {
-            width: 100%;
-            height: 36px;
-            border-radius: 8px;
-            border: none;
-            background: #00d97e14;
-            border: 0.5px solid #00d97e35;
-            color: #00d97e;
-            font-size: 12.5px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            transition: background 0.15s;
-        }
-
-        .p-btn-connect:hover {
-            background: #00d97e22;
+            margin-bottom: 20px;
+            word-break: break-word;
+            line-height: 1.6;
+            padding: 10px;
+            background: var(--surface2);
+            border-radius: 7px;
+            font-family: var(--mono);
         }
 
         .p-btn-retry {
-            height: 32px;
-            padding: 0 16px;
-            border-radius: 7px;
-            border: 0.5px solid rgba(255, 255, 255, 0.07);
-            background: #18181e;
-            color: #8e8e9f;
-            font-size: 12px;
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-            transition: background 0.15s;
+            border-color: var(--border-em);
         }
 
         .p-btn-retry:hover {
-            background: #1f1f2a;
-            color: #e8e8f2;
+            border-color: var(--fg);
+            color: var(--fg);
         }
     </style>
 </head>
-
 <body>
+
+    <!-- HEADER -->
     <div class="p-header">
-        <div class="p-logo">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <circle cx="7" cy="7" r="5.5" stroke="#00d97e" stroke-width="1.25" />
-                <path d="M7 3.5V7l2.5 1.5" stroke="#00d97e" stroke-width="1.25" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
+        <div class="p-logo">42</div>
+        <div class="p-title-group">
+            <div class="p-title">Logtime</div>
+            <div class="p-subtitle">42 School tracker</div>
         </div>
-        <div>
-            <div class="p-title">Logtime Companion</div>
-            <div class="p-subtitle">42Network tracker</div>
+        <div class="p-status-pill">
+            <div class="p-status-dot offline" id="status-dot"></div>
+            <span class="dot-label" id="status-label">Offline</span>
         </div>
-        <div class="p-status-dot offline" id="status-dot"></div>
     </div>
 
+    <!-- LOADING -->
     <div class="p-view p-loading" id="view-loading">
-        <div class="p-spinner"></div><span>fetching logtime...</span>
+        <div class="p-spinner"></div>
+        <span class="loading-text">Fetching your hours…</span>
     </div>
 
+    <!-- AUTH -->
     <div class="p-view p-auth" id="view-auth">
         <div class="p-auth-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                <rect x="3" y="9" width="16" height="11" rx="2.5" stroke="#3a3a50" stroke-width="1.25" />
-                <path d="M7 9V6.5a4 4 0 0 1 8 0V9" stroke="#3a3a50" stroke-width="1.25" stroke-linecap="round" />
-                <circle cx="11" cy="14.5" r="1.5" fill="#3a3a50" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted)">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
         </div>
-        <p class="p-auth-desc">Connect your 42 account to track weekly logtime and milestone alerts.</p>
-        <button class="p-btn-connect"><svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 1L9.5 5H13l-3 2.5 1.5 4L7 9l-4.5 2.5L4 7.5 1 5h3.5L7 1z" fill="#00d97e" opacity=".8" />
-            </svg>Connect with 42</button>
+        <p class="p-auth-title">Sign in to continue</p>
+        <p class="p-auth-desc">Connect your 42 Intra account to start tracking your logtime.</p>
+        <button class="btn p-btn-connect">Connect to 42 Intra</button>
     </div>
 
+    <!-- MAIN -->
     <div class="p-view p-main" id="view-main">
-        <div class="p-section" style="padding: 10px 0;">
-            <div class="timer-row">
-                <div class="timer-cell"><span class="timer-val accent" id="t-days">--</span><span
-                        class="timer-lbl">days</span></div>
-                <div class="timer-cell"><span class="timer-val" id="t-hours">--</span><span
-                        class="timer-lbl">hours</span></div>
-                <div class="timer-cell"><span class="timer-val" id="t-mins">--</span><span class="timer-lbl">mins</span>
+
+        <!-- Hero: hours -->
+        <div class="hero-section">
+            <div class="hero-label">Hours logged this week</div>
+            <div class="hours-display">
+                <span class="hours-big" id="h-value">0.0</span>
+                <span class="hours-of">/ 30h</span>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="prog-wrap">
+                <div class="prog-bar-outer">
+                    <div class="prog-fill" id="prog-fill"></div>
+                </div>
+                <div class="prog-ticks">
+                    <div class="prog-tick" style="left:66.7%">
+                        <div class="tick-line"></div>
+                        <div class="tick-val">20h</div>
+                    </div>
+                    <div class="prog-tick" style="left:83.3%">
+                        <div class="tick-line"></div>
+                        <div class="tick-val">25h</div>
+                    </div>
                 </div>
             </div>
+
+            <p class="prog-status" id="prog-status">Calculating…</p>
         </div>
-        <div class="p-section">
-            <div class="hours-row">
-                <span class="hours-big" id="h-value">0.0</span><span class="hours-unit">h</span><span
-                    class="hours-quota">/ 30h</span>
+
+        <!-- Countdown + settings -->
+        <div class="secondary-section">
+            <div class="section-label">Week ends in</div>
+            <div class="countdown-grid">
+                <div class="countdown-cell">
+                    <span class="countdown-val" id="t-days">--</span>
+                    <span class="countdown-unit">Days</span>
+                </div>
+                <div class="countdown-cell">
+                    <span class="countdown-val" id="t-hours">--</span>
+                    <span class="countdown-unit">Hours</span>
+                </div>
+                <div class="countdown-cell">
+                    <span class="countdown-val" id="t-mins">--</span>
+                    <span class="countdown-unit">Minutes</span>
+                </div>
             </div>
-            <div class="prog-track">
-                <div class="prog-tick" style="left: 66.66%;"></div>
-                <div class="prog-tick" style="left: 83.33%;"></div>
-                <div class="prog-fill" id="prog-fill"></div>
-            </div>
-            <div class="prog-labels"><span>0h</span><span>20h</span><span>25h</span><span>30h</span></div>
-            <p class="prog-status" id="prog-status">Calculating...</p>
-        </div>
-        <div class="p-section" style="padding-top: 10px; padding-bottom: 10px;">
-            <div class="p-select-wrap">
-                <span class="p-select-lbl">Week starts</span>
+
+            <div class="input-group">
+                <label for="week-start">Week starts on</label>
                 <select class="p-select" id="week-start">
                     <option value="0">Sunday</option>
                     <option value="1">Monday</option>
@@ -550,29 +541,33 @@
                 </select>
             </div>
         </div>
+
+        <!-- Actions -->
         <div class="p-actions">
-            <button class="p-btn p-btn-refresh"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"
-                    stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
-                    <path d="M9.5 2A5 5 0 1 0 10 5.5" />
-                    <path d="M10 1v2.5H7.5" />
-                </svg>Refresh</button>
-            <button class="p-btn p-btn-logout">Sign out</button>
+            <button class="btn p-btn-refresh">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                Refresh
+            </button>
+            <button class="p-btn-logout">Sign out</button>
         </div>
+
     </div>
 
+    <!-- ERROR -->
     <div class="p-view p-error" id="view-error">
-        <div class="p-error-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M9 6v4M9 12.5v.5" stroke="#f06464" stroke-width="1.4" stroke-linecap="round" />
-                <path d="M1.5 15L9 3l7.5 12H1.5z" stroke="#f06464" stroke-width="1.2" stroke-linejoin="round" />
-            </svg></div>
-        <div class="p-error-title">Request failed</div>
+        <div class="p-error-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <p class="p-error-title">Something went wrong</p>
         <p class="p-error-msg" id="error-msg"></p>
-        <button class="p-btn-retry">Try again</button>
+        <button class="btn p-btn-retry">Try again</button>
     </div>
-
-    <div class="p-footer"><span>auto-refresh 15min</span><span>42 API</span></div>
 
     <script src="popup.js"></script>
 </body>
-
 </html>
