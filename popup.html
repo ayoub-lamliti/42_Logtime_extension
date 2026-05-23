@@ -6,24 +6,22 @@
     <title>Logtime Companion</title>
     <style>
         :root {
-            --bg:        #09090f;
-            --card:      #13131f;
-            --card2:     #1c1c2c;
+            --bg:        #151929;
+            --card:      #1c2138;
+            --card2:     #232b45;
             --border:    rgba(255,255,255,0.06);
-            --border-em: rgba(122,97,255,0.3);
             --fg:        #ffffff;
-            --muted:     #6b6b80;
-            --muted2:    #4a4a5c;
-            --accent:    #7a61ff;
-            --accent-s:  #9b85ff;
-            --accent-bg: rgba(122,97,255,0.12);
+            --muted:     #6b7399;
+            --muted2:    #3d4466;
+            --accent:    #4f8ef7;
+            --accent-bg: rgba(79,142,247,0.12);
+            --green:     #22c55e;
+            --green-bg:  rgba(34,197,94,0.12);
+            --red:       #ff4d6a;
+            --red-bg:    rgba(255,77,106,0.12);
             --warn:      #ff9f0a;
-            --warn-bg:   rgba(255,159,10,0.12);
-            --danger:    #ff453a;
-            --danger-bg: rgba(255,69,58,0.12);
             --mono: ui-monospace,'Cascadia Code','Menlo','Consolas',monospace;
             --sans: -apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;
-            --circ: 452;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,8 +31,8 @@
             background: var(--bg);
             color: var(--fg);
             font-family: var(--sans);
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.4;
             user-select: none;
             overflow: hidden;
         }
@@ -44,275 +42,278 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 14px 16px 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
         }
 
         .p-logo {
-            width: 32px;
-            height: 32px;
+            width: 28px; height: 28px;
             background: var(--accent);
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
             font-family: var(--mono);
-            font-size: 13px;
-            font-weight: 700;
-            color: #fff;
+            font-size: 12px; font-weight: 700; color: #fff;
             flex-shrink: 0;
         }
 
-        .p-title-group { display: flex; flex-direction: column; }
-        .p-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
-        .p-subtitle { font-size: 11px; color: var(--muted); }
+        .p-title   { font-size: 13px; font-weight: 600; }
+        .p-subtitle { font-size: 10px; color: var(--muted); }
 
         .p-status-pill {
             margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
+            display: flex; align-items: center; gap: 5px;
+            padding: 3px 9px;
             border-radius: 20px;
             border: 1px solid var(--border);
-            background: var(--card);
-            font-size: 11px;
-            color: var(--muted);
+            font-size: 10px; color: var(--muted);
         }
 
         .p-status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--accent);
+            width: 5px; height: 5px;
+            border-radius: 50%; background: var(--green);
         }
         .p-status-dot.offline { background: var(--muted2); }
-        .p-status-dot.error   { background: var(--danger); }
+        .p-status-dot.error   { background: var(--red); }
 
         /* ── VIEWS ── */
         .p-view { display: none; flex-direction: column; }
         .p-view.active { display: flex; }
 
-        /* ── RING HERO CARD ── */
-        .hero-card {
-            margin: 0 12px 10px;
+        /* ── TODAY CARD ── */
+        .today-card {
+            margin: 14px 14px 8px;
             background: var(--card);
-            border-radius: 20px;
             border: 1px solid var(--border);
-            padding: 24px 20px 20px;
+            border-radius: 18px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .today-left { display: flex; flex-direction: column; gap: 6px; }
+
+        .section-label {
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .today-hours {
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+
+        .today-num {
+            font-family: var(--mono);
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -2px;
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .today-unit {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        .today-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .badge.blue  { background: var(--accent-bg); color: var(--accent); }
+        .badge.green { background: var(--green-bg);  color: var(--green);  }
+        .badge.red   { background: var(--red-bg);    color: var(--red);    }
+
+        .target-label { font-size: 10px; color: var(--muted); }
+
+        /* ── WEEK CARD ── */
+        .week-card {
+            margin: 0 14px 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .ring-wrap {
-            position: relative;
-            width: 160px;
-            height: 160px;
+        .week-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 16px;
         }
 
+        /* ── RING ── */
+        .ring-wrap {
+            position: relative;
+            width: 140px; height: 140px;
+            margin-bottom: 18px;
+        }
+
         .ring-svg {
-            width: 160px;
-            height: 160px;
+            width: 140px; height: 140px;
             transform: rotate(-90deg);
         }
 
-        .ring-bg-circle {
-            fill: none;
-            stroke: var(--card2);
-            stroke-width: 14;
-        }
+        .ring-bg-circle { fill: none; stroke: var(--card2); stroke-width: 11; }
 
         .ring-arc {
             fill: none;
             stroke: var(--accent);
-            stroke-width: 14;
+            stroke-width: 11;
             stroke-linecap: round;
-            stroke-dasharray: 452;
-            stroke-dashoffset: 452;
+            stroke-dasharray: 395;
+            stroke-dashoffset: 395;
             transition: stroke-dashoffset 0.5s cubic-bezier(0.4,0,0.2,1),
                         stroke 0.3s ease;
         }
 
         .ring-center {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
         }
 
         .ring-hours {
             font-family: var(--mono);
-            font-size: 38px;
-            font-weight: 700;
-            letter-spacing: -2px;
-            line-height: 1;
+            font-size: 30px; font-weight: 700;
+            line-height: 1; letter-spacing: -1px;
             font-variant-numeric: tabular-nums;
             font-feature-settings: "tnum";
         }
 
-        .ring-goal {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 3px;
+        .ring-goal { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+        /* ── WEEK STATS ROW ── */
+        .week-stats {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 0;
         }
 
-        .hero-status {
-            font-size: 12px;
+        .stat-divider { background: var(--border); }
+
+        .stat-block { text-align: center; padding: 0 12px; }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             color: var(--muted);
-            text-align: center;
-            line-height: 1.5;
+            margin-bottom: 4px;
         }
 
-        .hero-status .accent  { color: var(--accent-s);  font-weight: 600; }
-        .hero-status .warn    { color: var(--warn);   font-weight: 600; }
-        .hero-status .danger  { color: var(--danger); font-weight: 600; }
+        .stat-val {
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
 
-        /* hidden JS target for progress */
+        .stat-val.red   { color: var(--red); }
+        .stat-val.green { color: var(--green); }
+
+        /* ── HIDDEN JS COMPAT ── */
         .prog-hidden { display: none; }
         .prog-fill { width: 0%; }
-        .prog-fill.warn   { background: var(--warn); }
-        .prog-fill.danger { background: var(--danger); }
 
-        /* ── COUNTDOWN CARDS ── */
-        .section-wrap {
-            margin: 0 12px 10px;
-        }
-
-        .section-label {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            color: var(--muted);
-            margin-bottom: 8px;
-            padding-left: 2px;
-        }
-
-        .countdown-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        /* ── BOTTOM STRIP ── */
+        .bottom-strip {
+            border-top: 1px solid var(--border);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
 
-        .cd-cell {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px 8px 10px;
-            text-align: center;
-        }
+        .input-group { display: flex; align-items: center; gap: 7px; flex: 1; }
+        .input-group label { font-size: 10px; color: var(--muted); white-space: nowrap; }
 
-        .cd-val {
-            font-family: var(--mono);
-            font-size: 24px;
-            font-weight: 700;
-            display: block;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
-            font-feature-settings: "tnum";
-        }
-
-        .cd-unit {
-            display: block;
-            font-size: 10px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 5px;
-        }
-
-        /* ── SELECT ── */
-        .select-wrap {
-            position: relative;
-        }
+        .select-wrap { position: relative; flex: 1; }
 
         .p-select {
             width: 100%;
-            background: var(--card);
+            background: var(--card2);
             color: var(--fg);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px 16px;
-            font-size: 13px;
+            border-radius: 8px;
+            padding: 6px 24px 6px 10px;
+            font-size: 11px;
             font-family: var(--sans);
             appearance: none;
             cursor: pointer;
         }
 
-        .p-select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-bg);
-        }
+        .p-select:focus { outline: none; border-color: var(--accent); }
 
         .select-chevron {
-            position: absolute;
-            right: 14px;
-            top: 50%;
+            position: absolute; right: 7px; top: 50%;
             transform: translateY(-50%);
-            pointer-events: none;
-            color: var(--muted);
-        }
-
-        /* ── ACTIONS ── */
-        .actions-wrap {
-            margin: 0 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            pointer-events: none; color: var(--muted);
         }
 
         .btn {
-            width: 100%;
             background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            padding: 13px;
-            font-size: 14px;
-            font-weight: 600;
+            color: #fff; border: none;
+            border-radius: 8px;
+            padding: 7px 13px;
+            font-size: 11px; font-weight: 600;
             font-family: var(--sans);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            transition: opacity 0.15s, transform 0.1s;
+            display: flex; align-items: center; gap: 5px;
+            transition: opacity 0.15s;
+            white-space: nowrap;
         }
 
-        .btn:hover  { opacity: 0.88; }
-        .btn:active { transform: scale(0.98); opacity: 0.8; }
-
-        .p-btn-refresh { background: var(--accent); }
+        .btn:hover  { opacity: 0.85; }
+        .btn:active { opacity: 0.7;  }
 
         .p-btn-logout {
-            background: transparent;
-            border: none;
+            background: none; border: none;
             color: var(--muted);
-            font-size: 12px;
-            font-family: var(--sans);
-            cursor: pointer;
-            padding: 4px 0 6px;
-            text-align: center;
-            width: 100%;
-            transition: color 0.15s;
+            font-size: 11px; font-family: var(--sans);
+            cursor: pointer; padding: 7px 0;
+            transition: color 0.15s; white-space: nowrap;
         }
+        .p-btn-logout:hover { color: var(--red); }
 
-        .p-btn-logout:hover { color: var(--danger); }
+        #prog-status { display: none; }
 
         /* ── OTHER VIEWS ── */
         .p-loading, .p-auth, .p-error {
             padding: 48px 24px;
-            text-align: center;
-            align-items: center;
+            text-align: center; align-items: center;
         }
 
         .p-spinner {
-            width: 28px;
-            height: 28px;
+            width: 26px; height: 26px;
             border: 3px solid var(--card2);
             border-top-color: var(--accent);
             border-radius: 50%;
@@ -321,70 +322,29 @@
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: var(--muted); font-size: 12px; }
 
-        .loading-text { color: var(--muted); font-size: 13px; }
-
-        /* Auth */
-        .p-auth-icon {
-            width: 52px;
-            height: 52px;
-            background: var(--accent-bg);
-            border: 1px solid var(--border-em);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .state-icon {
+            width: 48px; height: 48px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
             margin: 0 auto 16px;
         }
 
-        .p-auth-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .state-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+        .p-auth-desc { color: var(--muted); font-size: 12px; margin-bottom: 22px; line-height: 1.6; }
 
-        .p-auth-desc {
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
+        .p-btn-connect { width: 100%; justify-content: center; }
 
-        .p-btn-connect {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        /* Error */
-        .p-error-icon {
-            width: 52px;
-            height: 52px;
-            background: var(--danger-bg);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            color: var(--danger);
-        }
-
-        .p-error-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .p-error-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
 
         .p-error-msg {
-            color: var(--muted);
-            font-size: 11px;
-            margin-bottom: 20px;
-            word-break: break-word;
-            line-height: 1.6;
-            padding: 10px 12px;
-            background: var(--card);
-            border-radius: 10px;
-            font-family: var(--mono);
+            color: var(--muted); font-size: 11px; margin-bottom: 20px;
+            word-break: break-word; line-height: 1.6;
+            padding: 10px 12px; background: var(--card);
+            border-radius: 8px; font-family: var(--mono); width: 100%;
         }
 
-        .p-btn-retry {
-            background: var(--card2);
-            border: 1px solid var(--border-em);
-            color: var(--fg);
-        }
-
-        .p-btn-retry:hover { opacity: 0.8; }
+        .p-btn-retry { background: var(--card2); border: 1px solid var(--border); color: var(--fg); }
     </style>
 </head>
 <body>
@@ -392,7 +352,7 @@
     <!-- HEADER -->
     <div class="p-header">
         <div class="p-logo">42</div>
-        <div class="p-title-group">
+        <div>
             <div class="p-title">Logtime</div>
             <div class="p-subtitle">42 School tracker</div>
         </div>
@@ -410,13 +370,13 @@
 
     <!-- AUTH -->
     <div class="p-view p-auth" id="view-auth">
-        <div class="p-auth-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)">
+        <div class="state-icon" style="background:var(--accent-bg)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
                 <rect x="3" y="11" width="18" height="11" rx="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
         </div>
-        <p class="p-auth-title">Sign in to continue</p>
+        <p class="state-title">Sign in to continue</p>
         <p class="p-auth-desc">Connect your 42 Intra account to start tracking your logtime.</p>
         <button class="btn p-btn-connect">Connect to 42 Intra</button>
     </div>
@@ -424,68 +384,85 @@
     <!-- MAIN -->
     <div class="p-view p-main" id="view-main">
 
-        <!-- Hidden prog-fill target (JS compatibility) -->
+        <!-- JS compat -->
         <div class="prog-hidden">
             <div class="prog-fill" id="prog-fill"></div>
         </div>
+        <p id="prog-status"></p>
+        <span style="display:none" id="t-hours"></span>
+        <span style="display:none" id="t-mins"></span>
 
-        <!-- Ring card -->
-        <div class="hero-card">
+        <!-- TODAY -->
+        <div class="today-card">
+            <div class="today-left">
+                <span class="section-label">Today</span>
+                <div class="today-hours">
+                    <span class="today-num" id="today-value">0</span>
+                    <span class="today-unit">h</span>
+                </div>
+                <span class="target-label" id="today-target">Target: --</span>
+            </div>
+            <div class="today-right">
+                <div class="badge blue" id="today-est">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    Est. --:--
+                </div>
+            </div>
+        </div>
+
+        <!-- THIS WEEK -->
+        <div class="week-card">
+            <div class="week-top">
+                <span class="section-label">This week</span>
+            </div>
+
             <div class="ring-wrap">
-                <svg class="ring-svg" viewBox="0 0 160 160">
-                    <circle class="ring-bg-circle" cx="80" cy="80" r="72"/>
-                    <circle class="ring-arc" id="ring-arc" cx="80" cy="80" r="72"/>
+                <svg class="ring-svg" viewBox="0 0 140 140">
+                    <circle class="ring-bg-circle" cx="70" cy="70" r="63"/>
+                    <circle class="ring-arc" id="ring-arc" cx="70" cy="70" r="63"/>
                 </svg>
                 <div class="ring-center">
-                    <span class="ring-hours" id="h-value">0.0</span>
+                    <span class="ring-hours" id="h-value">0h</span>
                     <span class="ring-goal">of 30h</span>
                 </div>
             </div>
-            <p class="hero-status" id="prog-status">Calculating…</p>
-        </div>
 
-        <!-- Countdown -->
-        <div class="section-wrap">
-            <div class="section-label">Week ends in</div>
-            <div class="countdown-grid">
-                <div class="cd-cell">
-                    <span class="cd-val" id="t-days">--</span>
-                    <span class="cd-unit">Days</span>
+            <div class="week-stats">
+                <div class="stat-block">
+                    <div class="stat-label">Days</div>
+                    <div class="stat-val" id="t-days">--</div>
                 </div>
-                <div class="cd-cell">
-                    <span class="cd-val" id="t-hours">--</span>
-                    <span class="cd-unit">Hours</span>
-                </div>
-                <div class="cd-cell">
-                    <span class="cd-val" id="t-mins">--</span>
-                    <span class="cd-unit">Mins</span>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-val red" id="week-status">Not yet</div>
                 </div>
             </div>
         </div>
 
-        <!-- Week start -->
-        <div class="section-wrap">
-            <div class="section-label">Week starts on</div>
-            <div class="select-wrap">
-                <select class="p-select" id="week-start">
-                    <option value="0">Sunday</option>
-                    <option value="1">Monday</option>
-                    <option value="2">Tuesday</option>
-                    <option value="3">Wednesday</option>
-                    <option value="4">Thursday</option>
-                    <option value="5">Friday</option>
-                    <option value="6">Saturday</option>
-                </select>
-                <svg class="select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
+        <!-- BOTTOM -->
+        <div class="bottom-strip">
+            <div class="input-group">
+                <label for="week-start">Cycle</label>
+                <div class="select-wrap">
+                    <select class="p-select" id="week-start">
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                    <svg class="select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
             </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="actions-wrap">
             <button class="btn p-btn-refresh">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
                 </svg>
@@ -498,8 +475,8 @@
 
     <!-- ERROR -->
     <div class="p-view p-error" id="view-error">
-        <div class="p-error-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="state-icon" style="background:var(--red-bg)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2">
                 <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
         </div>

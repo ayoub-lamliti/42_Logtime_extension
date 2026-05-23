@@ -1,8 +1,8 @@
 (function () {
-    var CIRC   = 452;
-    var ACCENT = '#7a61ff';
+    var CIRC   = 395; /* 2 * PI * 63 */
+    var ACCENT = '#4f8ef7';
     var WARN   = '#ff9f0a';
-    var DANGER = '#ff453a';
+    var DANGER = '#ff4d6a';
 
     function syncRing() {
         var fill = document.getElementById('prog-fill');
