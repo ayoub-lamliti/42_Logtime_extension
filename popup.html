@@ -56,7 +56,7 @@
             flex-shrink: 0;
         }
 
-        .p-title   { font-size: 13px; font-weight: 600; }
+        .p-title    { font-size: 13px; font-weight: 600; }
         .p-subtitle { font-size: 10px; color: var(--muted); }
 
         .p-status-pill {
@@ -89,68 +89,61 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: border-color 0.3s ease;
         }
+
+        /* FIX: border reflects pace — connected to week card visually */
+        .today-card.on-track  { border-color: rgba(34,197,94,0.25); }
+        .today-card.behind    { border-color: rgba(255,77,106,0.25); }
 
         .today-left { display: flex; flex-direction: column; gap: 6px; }
 
         .section-label {
-            font-size: 9px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            font-size: 9px; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
             color: var(--muted);
         }
 
-        .today-hours {
-            display: flex;
-            align-items: baseline;
-            gap: 3px;
-        }
+        .today-hours { display: flex; align-items: baseline; gap: 3px; }
 
         .today-num {
             font-family: var(--mono);
-            font-size: 42px;
-            font-weight: 700;
-            line-height: 1;
-            letter-spacing: -2px;
+            font-size: 42px; font-weight: 700;
+            line-height: 1; letter-spacing: -2px;
             font-variant-numeric: tabular-nums;
             font-feature-settings: "tnum";
             -webkit-font-smoothing: antialiased;
         }
 
         .today-unit {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--muted);
-            margin-bottom: 3px;
+            font-size: 16px; font-weight: 500;
+            color: var(--muted); margin-bottom: 3px;
         }
 
         .today-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
+            display: flex; flex-direction: column;
+            align-items: flex-end; gap: 6px;
         }
 
         .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 9px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 9px; border-radius: 20px;
+            font-size: 10px; font-weight: 600;
         }
 
         .badge.blue  { background: var(--accent-bg); color: var(--accent); }
         .badge.green { background: var(--green-bg);  color: var(--green);  }
         .badge.red   { background: var(--red-bg);    color: var(--red);    }
 
-        .target-label { font-size: 10px; color: var(--muted); }
+        /* FIX: target label slightly more prominent */
+        .target-label {
+            font-size: 11px;
+            color: var(--muted);
+        }
 
         /* ── WEEK CARD ── */
         .week-card {
-            margin: 0 14px 14px;
+            margin: 0 14px 10px;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 18px;
@@ -162,9 +155,7 @@
 
         .week-top {
             width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 16px;
         }
 
@@ -175,10 +166,7 @@
             margin-bottom: 18px;
         }
 
-        .ring-svg {
-            width: 140px; height: 140px;
-            transform: rotate(-90deg);
-        }
+        .ring-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
 
         .ring-bg-circle { fill: none; stroke: var(--card2); stroke-width: 11; }
 
@@ -209,12 +197,11 @@
 
         .ring-goal { font-size: 10px; color: var(--muted); margin-top: 3px; }
 
-        /* ── WEEK STATS ROW ── */
+        /* ── WEEK STATS ── */
         .week-stats {
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 1px 1fr;
-            gap: 0;
         }
 
         .stat-divider { background: var(--border); }
@@ -222,29 +209,23 @@
         .stat-block { text-align: center; padding: 0 12px; }
 
         .stat-label {
-            font-size: 9px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 4px;
+            font-size: 9px; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 4px;
         }
 
         .stat-val {
             font-family: var(--mono);
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 20px; font-weight: 700;
             font-variant-numeric: tabular-nums;
         }
 
-        .stat-val.red   { color: var(--red); }
+        /* FIX: status colors only applied by JS, not hardcoded red */
         .stat-val.green { color: var(--green); }
+        .stat-val.red   { color: var(--red); }
+        .stat-val.warn  { color: var(--warn); }
 
-        /* ── HIDDEN JS COMPAT ── */
-        .prog-hidden { display: none; }
-        .prog-fill { width: 0%; }
-
-        /* ── BOTTOM STRIP ── */
+        /* ── BOTTOM STRIP — FIX: select + refresh only, sign out moved out ── */
         .bottom-strip {
             border-top: 1px solid var(--border);
             padding: 10px 14px;
@@ -265,10 +246,8 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 6px 24px 6px 10px;
-            font-size: 11px;
-            font-family: var(--sans);
-            appearance: none;
-            cursor: pointer;
+            font-size: 11px; font-family: var(--sans);
+            appearance: none; cursor: pointer;
         }
 
         .p-select:focus { outline: none; border-color: var(--accent); }
@@ -293,18 +272,27 @@
         }
 
         .btn:hover  { opacity: 0.85; }
-        .btn:active { opacity: 0.7;  }
+        .btn:active { opacity: 0.70; }
+
+        /* FIX: sign out moved to its own row, not crammed inline */
+        .signout-row {
+            padding: 0 14px 12px;
+            display: flex;
+            justify-content: center;
+        }
 
         .p-btn-logout {
             background: none; border: none;
             color: var(--muted);
             font-size: 11px; font-family: var(--sans);
-            cursor: pointer; padding: 7px 0;
-            transition: color 0.15s; white-space: nowrap;
+            cursor: pointer; padding: 4px 12px;
+            transition: color 0.15s;
         }
         .p-btn-logout:hover { color: var(--red); }
 
         #prog-status { display: none; }
+        .prog-hidden { display: none; }
+        .prog-fill   { width: 0%; }
 
         /* ── OTHER VIEWS ── */
         .p-loading, .p-auth, .p-error {
@@ -330,9 +318,8 @@
             margin: 0 auto 16px;
         }
 
-        .state-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-        .p-auth-desc { color: var(--muted); font-size: 12px; margin-bottom: 22px; line-height: 1.6; }
-
+        .state-title  { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+        .p-auth-desc  { color: var(--muted); font-size: 12px; margin-bottom: 22px; line-height: 1.6; }
         .p-btn-connect { width: 100%; justify-content: center; }
 
         .p-error-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
@@ -384,7 +371,7 @@
     <!-- MAIN -->
     <div class="p-view p-main" id="view-main">
 
-        <!-- JS compat -->
+        <!-- JS compat hooks -->
         <div class="prog-hidden">
             <div class="prog-fill" id="prog-fill"></div>
         </div>
@@ -393,21 +380,23 @@
         <span style="display:none" id="t-mins"></span>
 
         <!-- TODAY -->
-        <div class="today-card">
+        <div class="today-card" id="today-card">
             <div class="today-left">
                 <span class="section-label">Today</span>
                 <div class="today-hours">
                     <span class="today-num" id="today-value">0</span>
                     <span class="today-unit">h</span>
                 </div>
+                <!-- FIX: target populated by popup.js via today-target -->
                 <span class="target-label" id="today-target">Target: --</span>
             </div>
             <div class="today-right">
+                <!-- FIX: label clarified to "Daily goal" -->
                 <div class="badge blue" id="today-est">
                     <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
                     </svg>
-                    Est. --:--
+                    Daily goal
                 </div>
             </div>
         </div>
@@ -430,22 +419,24 @@
             </div>
 
             <div class="week-stats">
+                <!-- FIX: "Days left" instead of ambiguous "Days" -->
                 <div class="stat-block">
-                    <div class="stat-label">Days</div>
+                    <div class="stat-label">Days left</div>
                     <div class="stat-val" id="t-days">--</div>
                 </div>
                 <div class="stat-divider"></div>
+                <!-- FIX: status set by JS dynamically, no hardcoded red -->
                 <div class="stat-block">
-                    <div class="stat-label">Status</div>
-                    <div class="stat-val red" id="week-status">Not yet</div>
+                    <div class="stat-label">Pace</div>
+                    <div class="stat-val" id="week-status">--</div>
                 </div>
             </div>
         </div>
 
-        <!-- BOTTOM -->
+        <!-- BOTTOM: FIX — "Week starts on" restored, sign out moved below -->
         <div class="bottom-strip">
             <div class="input-group">
-                <label for="week-start">Cycle</label>
+                <label for="week-start">Week starts on</label>
                 <div class="select-wrap">
                     <select class="p-select" id="week-start">
                         <option value="0">Sunday</option>
@@ -468,6 +459,10 @@
                 </svg>
                 Refresh
             </button>
+        </div>
+
+        <!-- FIX: sign out on its own row, not competing with controls -->
+        <div class="signout-row">
             <button class="p-btn-logout">Sign out</button>
         </div>
 

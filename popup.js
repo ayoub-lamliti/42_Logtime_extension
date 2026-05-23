@@ -3,6 +3,7 @@
   // ─── CONFIGURATION ──────────────────────────────────────────────────────────
   const WEEKLY_QUOTA_HOURS = 30;
   const MILESTONES = [20, 25, 30];
+  let currentHours = 0; // shared between renderProgress and updateLiveTimer
 
   // ─── STORAGE FUNCTIONS ──────────────────────────────────────────────────────
   function get(keys) {
@@ -84,6 +85,7 @@
   }
 
   function renderProgress(hours) {
+    currentHours = hours;
     const capped = Math.min(hours, WEEKLY_QUOTA_HOURS);
     const pct = (capped / WEEKLY_QUOTA_HOURS) * 100;
 
@@ -128,6 +130,36 @@
     document.getElementById('t-mins').textContent = String(m).padStart(2, '0');
 
     document.getElementById('t-days').className = 'timer-val' + (d <= 1 ? ' warn' : ' accent');
+
+    // Daily target: hours still needed divided by days remaining
+    const daysLeft = d + (h > 0 || m > 0 ? 1 : 0);
+    const hoursLeft = Math.max(0, WEEKLY_QUOTA_HOURS - currentHours);
+    const dailyTarget = daysLeft > 0 ? (hoursLeft / daysLeft).toFixed(1) : '0.0';
+    document.getElementById('today-target').textContent = 'Target: ' + dailyTarget + 'h/day';
+
+    // Pace status: compare actual vs expected progress
+    const daysElapsed = 7 - daysLeft;
+    const expectedHours = (daysElapsed / 7) * WEEKLY_QUOTA_HOURS;
+    const weekStatus = document.getElementById('week-status');
+    const todayCard  = document.getElementById('today-card');
+
+    if (currentHours >= WEEKLY_QUOTA_HOURS) {
+      weekStatus.textContent = 'Done';
+      weekStatus.className = 'stat-val green';
+      todayCard.className = 'today-card on-track';
+    } else if (daysElapsed === 0) {
+      weekStatus.textContent = '--';
+      weekStatus.className = 'stat-val';
+      todayCard.className = 'today-card';
+    } else if (currentHours >= expectedHours) {
+      weekStatus.textContent = 'On track';
+      weekStatus.className = 'stat-val green';
+      todayCard.className = 'today-card on-track';
+    } else {
+      weekStatus.textContent = 'Behind';
+      weekStatus.className = 'stat-val red';
+      todayCard.className = 'today-card behind';
+    }
   }
 
   function sendMessage(message) {
