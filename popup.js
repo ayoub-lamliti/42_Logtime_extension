@@ -3,7 +3,9 @@
   // ─── CONFIGURATION ──────────────────────────────────────────────────────────
   const WEEKLY_QUOTA_HOURS = 30;
   const MILESTONES = [20, 25, 30];
-  let currentHours = 0; // shared between renderProgress and updateLiveTimer
+
+  // ─── SHARED STATE ───────────────────────────────────────────────────────────
+  let currentHours = 0;
 
   // ─── STORAGE FUNCTIONS ──────────────────────────────────────────────────────
   function get(keys) {
@@ -23,11 +25,7 @@
   async function getStoredTokens() {
     const r = await get(["access_token", "refresh_token", "expires_at"]);
     if (r.access_token && r.refresh_token && r.expires_at) {
-      return {
-        access_token: r.access_token,
-        refresh_token: r.refresh_token,
-        expires_at: r.expires_at
-      };
+      return { access_token: r.access_token, refresh_token: r.refresh_token, expires_at: r.expires_at };
     }
     return null;
   }
@@ -48,35 +46,34 @@
 
   // ─── DOM ELEMENTS ───────────────────────────────────────────────────────────
   const viewLoading = document.getElementById("view-loading");
-  const viewAuth = document.getElementById("view-auth");
-  const viewMain = document.getElementById("view-main");
-  const viewError = document.getElementById("view-error");
+  const viewAuth    = document.getElementById("view-auth");
+  const viewMain    = document.getElementById("view-main");
+  const viewError   = document.getElementById("view-error");
 
   const btnConnect = document.querySelector(".p-btn-connect");
-  const btnLogout = document.querySelector(".p-btn-logout");
+  const btnLogout  = document.querySelector(".p-btn-logout");
   const btnRefresh = document.querySelector(".p-btn-refresh");
-  const btnRetry = document.querySelector(".p-btn-retry");
+  const btnRetry   = document.querySelector(".p-btn-retry");
 
-  const elHours = document.getElementById("h-value");
+  const elHours        = document.getElementById("h-value");
   const elProgressFill = document.getElementById("prog-fill");
-  const elStatusText = document.getElementById("prog-status");
-  const elErrorMsg = document.getElementById("error-msg");
+  const elStatusText   = document.getElementById("prog-status");
+  const elErrorMsg     = document.getElementById("error-msg");
   const startDaySelect = document.getElementById("week-start");
-  const dot = document.getElementById('status-dot');
+  const dot            = document.getElementById("status-dot");
+  const todayCard      = document.getElementById("today-card");
 
   // ─── UI LOGIC ───────────────────────────────────────────────────────────────
   function showView(view) {
-    document.querySelectorAll('.p-view').forEach(v => v.classList.remove('active'));
-
+    document.querySelectorAll(".p-view").forEach(v => v.classList.remove("active"));
     const map = {
-      loading: 'view-loading',
-      unauthenticated: 'view-auth',
-      authenticated: 'view-main',
-      error: 'view-error'
+      loading:         "view-loading",
+      unauthenticated: "view-auth",
+      authenticated:   "view-main",
+      error:           "view-error"
     };
-
-    document.getElementById(map[view]).classList.add('active');
-    dot.className = 'p-status-dot' + (view === 'authenticated' ? '' : view === 'error' ? ' error' : ' offline');
+    document.getElementById(map[view]).classList.add("active");
+    dot.className = "p-status-dot" + (view === "authenticated" ? "" : view === "error" ? " error" : " offline");
   }
 
   function showError(message) {
@@ -87,21 +84,17 @@
   function renderProgress(hours) {
     currentHours = hours;
     const capped = Math.min(hours, WEEKLY_QUOTA_HOURS);
-    const pct = (capped / WEEKLY_QUOTA_HOURS) * 100;
+    const pct    = (capped / WEEKLY_QUOTA_HOURS) * 100;
 
-    elHours.textContent = hours.toFixed(1);
+    elHours.textContent = hours.toFixed(1) + "h";
 
-    elProgressFill.className = 'prog-fill';
+    elProgressFill.className   = "prog-fill";
     elProgressFill.style.width = `${pct}%`;
 
     if (hours >= WEEKLY_QUOTA_HOURS) {
-      elProgressFill.classList.add('danger');
-      elStatusText.innerHTML = 'Quota reached. <span class="highlight">Good job.</span>';
+      elProgressFill.classList.add("danger");
     } else if (hours >= 25) {
-      elProgressFill.classList.add('warn');
-      elStatusText.innerHTML = `<span class="highlight warn">${(WEEKLY_QUOTA_HOURS - hours).toFixed(1)}h</span> to reach quota`;
-    } else {
-      elStatusText.innerHTML = `<span class="highlight">${(WEEKLY_QUOTA_HOURS - hours).toFixed(1)}h</span> remaining to quota`;
+      elProgressFill.classList.add("warn");
     }
   }
 
@@ -109,67 +102,73 @@
     const selectVal = parseInt(startDaySelect.value, 10);
     const targetDay = isNaN(selectVal) ? 1 : selectVal;
 
-    const now = new Date();
+    const now       = new Date();
     const dayOfWeek = now.getDay();
-    let diff = dayOfWeek - targetDay;
+    let diff        = dayOfWeek - targetDay;
     if (diff < 0) diff += 7;
 
     const weekStart = new Date(now);
     weekStart.setDate(now.getDate() - diff);
     weekStart.setHours(0, 0, 0, 0);
 
-    const deadline = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const deadline    = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
     const remainingMs = Math.max(0, deadline.getTime() - now.getTime());
 
     const d = Math.floor(remainingMs / 86400000);
     const h = Math.floor((remainingMs % 86400000) / 3600000);
     const m = Math.floor((remainingMs % 3600000) / 60000);
 
-    document.getElementById('t-days').textContent = String(d).padStart(2, '0');
-    document.getElementById('t-hours').textContent = String(h).padStart(2, '0');
-    document.getElementById('t-mins').textContent = String(m).padStart(2, '0');
-
-    document.getElementById('t-days').className = 'timer-val' + (d <= 1 ? ' warn' : ' accent');
-
-    // Daily target: hours still needed divided by days remaining
+    // ── Days left ──────────────────────────────────────────────────────────
+    // Show remaining full days. If <1 day left, show "< 1"
     const daysLeft = d + (h > 0 || m > 0 ? 1 : 0);
-    const hoursLeft = Math.max(0, WEEKLY_QUOTA_HOURS - currentHours);
-    const dailyTarget = daysLeft > 0 ? (hoursLeft / daysLeft).toFixed(1) : '0.0';
-    document.getElementById('today-target').textContent = 'Target: ' + dailyTarget + 'h/day';
+    document.getElementById("t-days").textContent = daysLeft > 0 ? String(daysLeft) : "0";
 
-    // Pace status: compare actual vs expected progress
+    // Keep hidden compat hooks
+    document.getElementById("t-hours").textContent = String(h).padStart(2, "0");
+    document.getElementById("t-mins").textContent  = String(m).padStart(2, "0");
+
+    // ── Daily target ────────────────────────────────────────────────────────
+    const hoursLeft   = Math.max(0, WEEKLY_QUOTA_HOURS - currentHours);
+    const dailyTarget = daysLeft > 0
+      ? (hoursLeft / daysLeft).toFixed(1)
+      : "0.0";
+    document.getElementById("today-target").textContent = "Target today: " + dailyTarget + "h";
+
+    // ── Pace status ─────────────────────────────────────────────────────────
+    // Days elapsed since week start
     const daysElapsed = 7 - daysLeft;
-    const expectedHours = (daysElapsed / 7) * WEEKLY_QUOTA_HOURS;
-    const weekStatus = document.getElementById('week-status');
-    const todayCard  = document.getElementById('today-card');
+    const weekStatusEl  = document.getElementById("week-status");
 
     if (currentHours >= WEEKLY_QUOTA_HOURS) {
-      weekStatus.textContent = 'Done';
-      weekStatus.className = 'stat-val green';
-      todayCard.className = 'today-card on-track';
-    } else if (daysElapsed === 0) {
-      weekStatus.textContent = '--';
-      weekStatus.className = 'stat-val';
-      todayCard.className = 'today-card';
-    } else if (currentHours >= expectedHours) {
-      weekStatus.textContent = 'On track';
-      weekStatus.className = 'stat-val green';
-      todayCard.className = 'today-card on-track';
+      // Quota done
+      weekStatusEl.textContent = "Done!";
+      weekStatusEl.className   = "stat-val green";
+      todayCard.className      = "today-card on-track";
+    } else if (daysElapsed <= 0) {
+      // First moments of week — no data to judge pace
+      weekStatusEl.textContent = "--";
+      weekStatusEl.className   = "stat-val";
+      todayCard.className      = "today-card";
     } else {
-      weekStatus.textContent = 'Behind';
-      weekStatus.className = 'stat-val red';
-      todayCard.className = 'today-card behind';
+      // Expected hours at this point in the week
+      const expectedHours = daysElapsed * (WEEKLY_QUOTA_HOURS / 7);
+      if (currentHours >= expectedHours) {
+        weekStatusEl.textContent = "On track";
+        weekStatusEl.className   = "stat-val green";
+        todayCard.className      = "today-card on-track";
+      } else {
+        weekStatusEl.textContent = "Behind";
+        weekStatusEl.className   = "stat-val red";
+        todayCard.className      = "today-card behind";
+      }
     }
   }
 
   function sendMessage(message) {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(message, (response) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve(response);
-        }
+        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+        else resolve(response);
       });
     });
   }
@@ -179,10 +178,7 @@
     showView("loading");
 
     const tokens = await getStoredTokens();
-    if (!tokens) {
-      showView("unauthenticated");
-      return;
-    }
+    if (!tokens) { showView("unauthenticated"); return; }
 
     const savedDay = await getStartDay();
     startDaySelect.value = savedDay.toString();
@@ -202,13 +198,12 @@
 
     updateLiveTimer();
     setInterval(updateLiveTimer, 60000);
-
     showView("authenticated");
   }
 
   // ─── EVENT LISTENERS ────────────────────────────────────────────────────────
   btnConnect.addEventListener("click", async () => {
-    btnConnect.disabled = true;
+    btnConnect.disabled  = true;
     btnConnect.innerHTML = `<div class="p-spinner" style="width:12px;height:12px;border-width:1px;border-top-color:#fff;"></div> Connecting...`;
     showView("loading");
 
@@ -217,8 +212,8 @@
     );
 
     if (!response.success) {
-      btnConnect.disabled = false;
-      btnConnect.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9.5 5H13l-3 2.5 1.5 4L7 9l-4.5 2.5L4 7.5 1 5h3.5L7 1z" fill="#00d97e" opacity=".8"/></svg>Connect with 42`;
+      btnConnect.disabled  = false;
+      btnConnect.innerHTML = `Connect to 42 Intra`;
       showError(`Authentication failed: ${response.error}`);
       return;
     }
@@ -231,17 +226,16 @@
   });
 
   btnRefresh.addEventListener("click", async () => {
-    btnRefresh.disabled = true;
+    btnRefresh.disabled  = true;
     btnRefresh.innerHTML = `<div class="p-spinner" style="width:12px;height:12px;border-width:1px;border-top-color:#fff;"></div>`;
 
     await sendMessage({ type: "FORCE_CHECK" }).catch(() => null);
     const hours = await getStoredHours();
-
     if (hours !== null) renderProgress(hours);
     updateLiveTimer();
 
-    btnRefresh.disabled = false;
-    btnRefresh.innerHTML = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M9.5 2A5 5 0 1 0 10 5.5"/><path d="M10 1v2.5H7.5"/></svg>Refresh`;
+    btnRefresh.disabled  = false;
+    btnRefresh.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refresh`;
   });
 
   btnRetry.addEventListener("click", () => {
@@ -251,19 +245,13 @@
   startDaySelect.addEventListener("change", async (e) => {
     const newDay = parseInt(e.target.value, 10);
     await setStartDay(newDay);
-
-    if (typeof updateLiveTimer === "function") {
-      updateLiveTimer();
-    }
+    if (typeof updateLiveTimer === "function") updateLiveTimer();
 
     btnRefresh.disabled = true;
     showView("loading");
-
     await sendMessage({ type: "FORCE_CHECK" }).catch(() => null);
-
     const hours = await getStoredHours();
     if (hours !== null) renderProgress(hours);
-
     showView("authenticated");
     btnRefresh.disabled = false;
   });
