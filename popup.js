@@ -227,7 +227,7 @@
 
   btnRefresh.addEventListener("click", async () => {
     btnRefresh.disabled  = true;
-    btnRefresh.innerHTML = `<span class="btn-spinner"></span>`;
+    btnRefresh.innerHTML = `<span class="btn-spinner"></span> Refreshing...`;
 
     await sendMessage({ type: "FORCE_CHECK" }).catch(() => null);
     const hours = await getStoredHours();
