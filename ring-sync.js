@@ -1,5 +1,5 @@
 (function () {
-    var CIRC      = 395;  /* 2 * PI * 63 */
+    var CIRC      = 424;  /* 2 * PI * 67.5 */
     var MIN_ARC   = 20;   /* minimum visible arc in px — ring never fully disappears */
     var ACCENT    = '#4f8ef7';
     var WARN      = '#ff9f0a';
