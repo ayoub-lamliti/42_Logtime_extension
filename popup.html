@@ -147,7 +147,7 @@
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 18px;
-            padding: 18px;
+            padding: 18px 18px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -162,21 +162,21 @@
         /* ── RING ── */
         .ring-wrap {
             position: relative;
-            width: 140px; height: 140px;
-            margin-bottom: 18px;
+            width: 150px; height: 150px;
+            margin-bottom: 20px;
         }
 
-        .ring-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+        .ring-svg { width: 150px; height: 150px; transform: rotate(-90deg); }
 
-        .ring-bg-circle { fill: none; stroke: var(--card2); stroke-width: 11; }
+        .ring-bg-circle { fill: none; stroke: var(--card2); stroke-width: 12; }
 
         .ring-arc {
             fill: none;
             stroke: var(--accent);
-            stroke-width: 11;
+            stroke-width: 12;
             stroke-linecap: round;
-            stroke-dasharray: 395;
-            stroke-dashoffset: 395;
+            stroke-dasharray: 424;
+            stroke-dashoffset: 424;
             transition: stroke-dashoffset 0.5s cubic-bezier(0.4,0,0.2,1),
                         stroke 0.3s ease;
         }
@@ -185,39 +185,47 @@
             position: absolute; inset: 0;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
+            gap: 2px;
         }
 
         .ring-hours {
             font-family: var(--mono);
-            font-size: 30px; font-weight: 700;
+            font-size: 32px; font-weight: 700;
             line-height: 1; letter-spacing: -1px;
             font-variant-numeric: tabular-nums;
             font-feature-settings: "tnum";
         }
 
-        .ring-goal { font-size: 10px; color: var(--muted); margin-top: 3px; }
+        .ring-goal { font-size: 10px; color: var(--muted); }
 
-        /* ── WEEK STATS ── */
+        /* ── WEEK STATS — 3 columns ── */
         .week-stats {
             width: 100%;
             display: grid;
-            grid-template-columns: 1fr 1px 1fr;
+            grid-template-columns: 1fr 1px 1fr 1px 1fr;
         }
 
-        .stat-divider { background: var(--border); }
+        .stat-divider { background: var(--border); margin: 4px 0; }
 
-        .stat-block { text-align: center; padding: 0 12px; }
+        .stat-block { text-align: center; padding: 0 8px; }
 
         .stat-label {
             font-size: 9px; font-weight: 600;
             letter-spacing: 0.08em; text-transform: uppercase;
-            color: var(--muted); margin-bottom: 4px;
+            color: var(--muted); margin-bottom: 5px;
         }
 
         .stat-val {
             font-family: var(--mono);
-            font-size: 20px; font-weight: 700;
+            font-size: 18px; font-weight: 700;
             font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        .stat-sub {
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 3px;
         }
 
         /* FIX: status colors only applied by JS, not hardcoded red */
@@ -302,13 +310,15 @@
         }
 
         .p-btn-logout {
-            background: none; border: none;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             color: var(--muted);
             font-size: 11px; font-family: var(--sans);
-            cursor: pointer; padding: 4px 12px;
-            transition: color 0.15s;
+            cursor: pointer; padding: 6px 20px;
+            transition: color 0.15s, border-color 0.15s;
         }
-        .p-btn-logout:hover { color: var(--red); }
+        .p-btn-logout:hover { color: var(--red); border-color: rgba(255,77,106,0.35); }
 
         #prog-status { display: none; }
         .prog-hidden { display: none; }
@@ -428,9 +438,9 @@
             </div>
 
             <div class="ring-wrap">
-                <svg class="ring-svg" viewBox="0 0 140 140">
-                    <circle class="ring-bg-circle" cx="70" cy="70" r="63"/>
-                    <circle class="ring-arc" id="ring-arc" cx="70" cy="70" r="63"/>
+                <svg class="ring-svg" viewBox="0 0 150 150">
+                    <circle class="ring-bg-circle" cx="75" cy="75" r="67.5"/>
+                    <circle class="ring-arc" id="ring-arc" cx="75" cy="75" r="67.5"/>
                 </svg>
                 <div class="ring-center">
                     <span class="ring-hours" id="h-value">0h</span>
@@ -439,16 +449,19 @@
             </div>
 
             <div class="week-stats">
-                <!-- FIX: "Days left" instead of ambiguous "Days" -->
                 <div class="stat-block">
                     <div class="stat-label">Days left</div>
                     <div class="stat-val" id="t-days">--</div>
                 </div>
                 <div class="stat-divider"></div>
-                <!-- FIX: status set by JS dynamically, no hardcoded red -->
                 <div class="stat-block">
                     <div class="stat-label">Pace</div>
                     <div class="stat-val" id="week-status">--</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">Remaining</div>
+                    <div class="stat-val" id="week-remaining">30h</div>
                 </div>
             </div>
         </div>
