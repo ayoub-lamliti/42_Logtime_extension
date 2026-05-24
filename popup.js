@@ -91,6 +91,10 @@
     elProgressFill.className   = "prog-fill";
     elProgressFill.style.width = `${pct}%`;
 
+    const remaining = Math.max(0, WEEKLY_QUOTA_HOURS - hours);
+    const elRemaining = document.getElementById("week-remaining");
+    if (elRemaining) elRemaining.textContent = remaining.toFixed(1) + "h";
+
     if (hours >= WEEKLY_QUOTA_HOURS) {
       elProgressFill.classList.add("danger");
     } else if (hours >= 25) {
