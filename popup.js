@@ -204,7 +204,7 @@
   // ─── EVENT LISTENERS ────────────────────────────────────────────────────────
   btnConnect.addEventListener("click", async () => {
     btnConnect.disabled  = true;
-    btnConnect.innerHTML = `<div class="p-spinner" style="width:12px;height:12px;border-width:1px;border-top-color:#fff;"></div> Connecting...`;
+    btnConnect.innerHTML = `<span class="btn-spinner"></span> Connecting...`;
     showView("loading");
 
     const response = await sendMessage({ type: "START_AUTH" }).catch(
@@ -227,7 +227,7 @@
 
   btnRefresh.addEventListener("click", async () => {
     btnRefresh.disabled  = true;
-    btnRefresh.innerHTML = `<div class="p-spinner" style="width:12px;height:12px;border-width:1px;border-top-color:#fff;"></div>`;
+    btnRefresh.innerHTML = `<span class="btn-spinner"></span>`;
 
     await sendMessage({ type: "FORCE_CHECK" }).catch(() => null);
     const hours = await getStoredHours();
